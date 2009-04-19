@@ -29,14 +29,19 @@ nonws		[^ \t\r\n]
 
 \'([^\']|\\\')*\'	|
 \"([^\"]|\\\")*\"	{
-		yylval.sval = strdup(yytext + 1);
-		yylval.sval[strlen(yylval.sval) - 1] = '\0';
+		yylval.sval = strncpy(	buffer,
+					++yytext,
+					(yyleng > sizeof(buffer) ? sizeof(buffer) : yyleng));
+		yylval.sval[yyleng - 2] = '\0';
 		BEGIN(INITIAL);
 		return STRING;
 		}
 
 <NAME>{nonws}+	{
-		yylval.sval = strdup(yytext);
+		yylval.sval = strncpy(	buffer,
+					yytext,
+					(yyleng > sizeof(buffer) ? sizeof(buffer) : yyleng));
+		yylval.sval[yyleng] = '\0';
 		BEGIN(INITIAL);
 		return STRING;
 		}
