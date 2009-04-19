@@ -36,6 +36,7 @@ struct Track {
 struct Cd {
 	int mode;			/* disc mode */
 	char *catalog;			/* Media Catalog Number (5.22.3) */
+	char *cdtextfile;		/* Filename of CDText File */
 	Cdtext *cdtext;			/* CD-TEXT */
 	int ntrack;			/* number of tracks in album */
 	Track *track[MAXTRACK];		/* array of tracks */
@@ -51,6 +52,7 @@ Cd *cd_init(void)
 	} else {
 		cd->mode = MODE_CD_DA;
 		cd->catalog = NULL;
+		cd->cdtextfile = NULL;
 		cd->cdtext = cdtext_init();
 		cd->ntrack = 0;
 	}
@@ -113,9 +115,17 @@ void cd_set_catalog(Cd *cd, char *catalog)
 	cd->catalog = strdup(catalog);
 }
 
-char *cd_get_catalog(Cd *cd)
+void cd_set_cdtextfile(Cd *cd, char *cdtextfile)
 {
-	return cd->catalog;
+	if (cd->cdtextfile)
+		free(cd->cdtextfile);
+
+	cd->cdtextfile = strdup(cdtextfile);
+}
+
+char *cd_get_cdtextfile(Cd *cd)
+{
+	return cd->cdtextfile;
 }
 
 Cdtext *cd_get_cdtext(Cd *cd)
@@ -267,11 +277,10 @@ Cdtext *track_get_cdtext(Track *track)
 
 void track_add_index(Track *track, long index)
 {
-	if (MAXTRACK - 1 > track->nindex) {
+	if (MAXTRACK - 1 > track->nindex)
 		track->nindex++;
-	} else {
+	else
 		fprintf(stderr, "too many indexes\n");
-	}
 
 	/* this will overwrite last index if there were too many */
 	track->index[track->nindex - 1] = index;
@@ -324,6 +333,7 @@ void cd_dump(Cd *cd)
 	printf("Disc Info\n");
 	printf("mode: %d\n", cd->mode);
 	printf("catalog: %s\n", cd->catalog);
+	printf("cdtextfile: %s\n", cd->cdtextfile);
 	if (NULL != cd->cdtext) {
 		printf("cdtext:\n");
 		cdtext_dump(cd->cdtext, 0);

@@ -113,7 +113,7 @@ global_statements
 
 global_statement
 	: CATALOG STRING '\n' { cd_set_catalog(cd, $2); }
-	| CDTEXTFILE STRING '\n' { /* ignored */ }
+	| CDTEXTFILE STRING '\n' { cd_set_cdtextfile(cd, $2); }
 	| cdtext
 	| track_data
 	| error '\n'

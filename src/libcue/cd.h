@@ -91,6 +91,9 @@ int cd_get_mode(Cd *cd);
 void cd_set_catalog(Cd *cd, char *catalog);
 char *cd_get_catalog(Cd *cd);
 
+void cd_set_cdtextfile(Cd *cd, char *cdtextfile);
+char *cd_get_cdtextfile(Cd *cd);
+
 /*
  * return pointer to cd's Cdtext
  */
