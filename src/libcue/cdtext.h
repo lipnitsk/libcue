@@ -41,7 +41,7 @@ enum PtiFormat {
 typedef struct Cdtext Cdtext;
 
 /* return a pointer to a new Cdtext */
-Cdtext *cdtext_init();
+Cdtext *cdtext_init(void);
 
 /* release a Cdtext */
 void cdtext_delete(Cdtext *cdtext);

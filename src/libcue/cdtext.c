@@ -16,7 +16,7 @@ struct Cdtext {
 	char *value;
 };
 
-Cdtext *cdtext_init()
+Cdtext *cdtext_init(void)
 {
 	Cdtext *new_cdtext = NULL;
 
@@ -41,11 +41,10 @@ Cdtext *cdtext_init()
 	};
 
 	new_cdtext = (Cdtext *) calloc (sizeof (cdtext) / sizeof (Cdtext), sizeof (Cdtext));
-	if (NULL == new_cdtext) {
+	if (NULL == new_cdtext)
 		fprintf (stderr, "problem allocating memory\n");
-	} else {
+	else
 		memcpy (new_cdtext, cdtext, sizeof(cdtext));
-	}
 
 	return new_cdtext;
 }
@@ -55,7 +54,8 @@ void cdtext_delete(Cdtext *cdtext)
 	int i;
 
 	if (NULL != cdtext) {
-		for (i = 0; PTI_END != cdtext[i].pti; i++) {
+		for (i = 0; PTI_END != cdtext[i].pti; i++)
+		{
 			free (cdtext[i].value);
 		}
 		free (cdtext);
@@ -65,11 +65,9 @@ void cdtext_delete(Cdtext *cdtext)
 /* return 0 if there is no cdtext, returns non-zero otherwise */
 int cdtext_is_empty(Cdtext *cdtext)
 {
-	for (; PTI_END != cdtext->pti; cdtext++) {
-		if (NULL != cdtext->value) {
+	for (; PTI_END != cdtext->pti; cdtext++)
+		if (NULL != cdtext->value)
 			return -1;
-		}
-	}
 
 	return 0;
 }
@@ -77,31 +75,27 @@ int cdtext_is_empty(Cdtext *cdtext)
 /* sets cdtext's pti entry to field */
 void cdtext_set(int pti, char *value, Cdtext *cdtext)
 {
-	if (NULL != value) {	/* don't pass NULL to strdup */
-		for (; PTI_END != cdtext->pti; cdtext++) {
+	if (NULL != value)	/* don't pass NULL to strdup */
+		for (; PTI_END != cdtext->pti; cdtext++)
 			if (pti == cdtext->pti) {
 				free (cdtext->value);
 				cdtext->value = strdup (value);
 			}
-		}
-	}
 }
 
 /* returns value for pti, NULL if pti is not found */
 char *cdtext_get(int pti, Cdtext *cdtext)
 {
-	for (; PTI_END != cdtext->pti; cdtext++) {
-		if (pti == cdtext->pti) {
+	for (; PTI_END != cdtext->pti; cdtext++)
+		if (pti == cdtext->pti)
 			return cdtext->value;
-		}
-	}
 
 	return NULL;
 }
 
 const char *cdtext_get_key(int pti, int istrack)
 {
-	char *key = NULL;
+	const char *key = NULL;
 
 	switch (pti) {
 	case PTI_TITLE:

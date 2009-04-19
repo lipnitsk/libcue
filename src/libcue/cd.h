@@ -77,11 +77,8 @@ typedef struct Cd Cd;
 typedef struct Track Track;
 
 /* return pointer to CD structure */
-Cd *cd_init();
+Cd *cd_init(void);
 
-/* dump all info from CD structure
- * in human readable format (for debugging)
- */
 void cd_dump(Cd *cd);
 
 /*

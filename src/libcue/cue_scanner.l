@@ -12,19 +12,22 @@
 #include "cue_parse_prefix.h"
 #include "cue_parse.h"
 
-int cue_lineno = 1;
+int yylineno = 1;
+
+int yylex(void);
 %}
 
 ws		[ \t\r]
 nonws		[^ \t\r\n]
 
 %option noyywrap
-%option prefix="cue_yy"
+%option nounput
 
 %s NAME
 
 %%
 
+\'([^\']|\\\')*\'	|
 \"([^\"]|\\\")*\"	{
 		yylval.sval = strdup(yytext + 1);
 		yylval.sval[strlen(yylval.sval) - 1] = '\0';
@@ -90,8 +93,8 @@ ISRC		{ BEGIN(NAME); return TRACK_ISRC; }
 [[:digit:]]+	{ yylval.ival = atoi(yytext); return NUMBER; }
 :		{ return yytext[0]; }
 
-^{ws}*\n	{ cue_lineno++; /* blank line */ }
-\n		{ cue_lineno++; return '\n'; }
+^{ws}*\n	{ yylineno++; /* blank line */ }
+\n		{ yylineno++; return '\n'; }
 .		{ fprintf(stderr, "bad character '%c'\n", yytext[0]); }
 
 %%

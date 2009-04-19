@@ -8,6 +8,7 @@
 #ifndef TIME_H
 #define TIME_H
 
+void msf_frame_to_msf(long frame, int *m, int *s, int *f);
 long time_msf_to_frame(int m, int s, int f);
 long time_mmssff_to_frame(char *mmssff);
 void time_frame_to_msf(long frame, int *m, int *s, int *f);
