@@ -11,6 +11,7 @@
 #define CD_H
 
 #include "cdtext.h"
+#include "rem.h"
 
 #define MAXTRACK	99	/* Red Book track limit */
 #define MAXINDEX	99	/* Red Book index limit */
@@ -105,6 +106,8 @@ char *cd_get_cdtextfile(Cd *cd);
  */
 Cdtext *cd_get_cdtext(Cd *cd);
 
+Rem* cd_get_rem(Cd* cd);
+
 /*
  * add a new track to cd, increment number of tracks
  * and return pointer to new track
@@ -159,6 +162,8 @@ void track_set_isrc(Track *track, char *isrc);
 char *track_get_isrc(Track *track);
 
 Cdtext *track_get_cdtext(Track *track);
+
+Rem* track_get_rem(Track* track);
 
 void track_add_index(Track *track, long index);
 int track_get_nindex(Track *track);

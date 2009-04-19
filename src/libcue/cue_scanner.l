@@ -28,6 +28,9 @@ nonws		[^ \t\r\n]
 %option nounput
 
 %s NAME
+%x REM
+%x RPG
+%x SKIP
 
 %%
 
@@ -96,7 +99,35 @@ SIZE_INFO	{ BEGIN(NAME); yylval.ival = PTI_SIZE_INFO;  return SIZE_INFO; }
 
 ISRC		{ BEGIN(NAME); return TRACK_ISRC; }
 
-^{ws}*REM.*\n	{ cue_lineno++; /* ignore comments */ }
+REM		{ BEGIN(REM); /* exclusive rules for special exceptions */ }
+
+<REM>DATE			{ BEGIN(NAME); yylval.ival = REM_DATE; return DATE; }
+<REM>REPLAYGAIN_ALBUM_GAIN 	{ BEGIN(RPG); yylval.ival = REM_REPLAYGAIN_ALBUM_GAIN;
+							return REPLAYGAIN_ALBUM_GAIN; }
+<REM>REPLAYGAIN_ALBUM_PEAK	{ BEGIN(RPG); yylval.ival = REM_REPLAYGAIN_ALBUM_PEAK;
+							return REPLAYGAIN_ALBUM_PEAK; }
+<REM>REPLAYGAIN_TRACK_GAIN	{ BEGIN(RPG); yylval.ival = REM_REPLAYGAIN_TRACK_GAIN;
+							return REPLAYGAIN_TRACK_GAIN; }
+<REM>REPLAYGAIN_TRACK_PEAK	{ BEGIN(RPG); yylval.ival = REM_REPLAYGAIN_TRACK_PEAK;
+							return REPLAYGAIN_TRACK_PEAK; }
+
+<REM>{ws}+	{ BEGIN(REM); }
+<REM>.		{ BEGIN(REM); }
+<REM>\n		{ BEGIN(INITIAL); }
+
+<RPG>{nonws}+	{
+		yylval.sval = strncpy(	buffer,
+					yytext,
+					(yyleng > sizeof(buffer) ? sizeof(buffer) : yyleng));
+		yylval.sval[yyleng] = '\0';
+		BEGIN(SKIP);
+		return STRING;
+		}
+
+<RPG>{ws}+	{ BEGIN(RPG); }
+
+<SKIP>.*\n	{ BEGIN(INITIAL); yylineno++; return '\n'; }
+
 {ws}+		{ /* ignore whitespace */ }
 
 [[:digit:]]+	{ yylval.ival = atoi(yytext); return NUMBER; }

@@ -27,6 +27,7 @@ struct Track {
 	int flags;			/* flags */
 	char *isrc;			/* IRSC Code (5.22.4) 12 bytes */
 	Cdtext *cdtext;			/* CD-TEXT */
+	Rem* rem;
 	int nindex;			/* number of indexes */
 	long index[MAXINDEX];		/* indexes (in frames) (5.29.2.5)
 					 * relative to start of track
@@ -38,6 +39,7 @@ struct Cd {
 	char *catalog;			/* Media Catalog Number (5.22.3) */
 	char *cdtextfile;		/* Filename of CDText File */
 	Cdtext *cdtext;			/* CD-TEXT */
+	Rem* rem;
 	int ntrack;			/* number of tracks in album */
 	Track *track[MAXTRACK];		/* array of tracks */
 };
@@ -54,6 +56,7 @@ Cd *cd_init(void)
 		cd->catalog = NULL;
 		cd->cdtextfile = NULL;
 		cd->cdtext = cdtext_init();
+		cd->rem = rem_new();
 		cd->ntrack = 0;
 	}
 
@@ -129,6 +132,7 @@ Track *track_init(void)
 		track->flags = FLAG_NONE;
 		track->isrc = NULL;
 		track->cdtext = cdtext_init();
+		track->rem = rem_new();
 		track->nindex = 0;
 	}
 
@@ -173,6 +177,15 @@ Cdtext *cd_get_cdtext(Cd *cd)
 {
 	if (cd != NULL)
 		return cd->cdtext;
+	else
+		return NULL;
+}
+
+Rem*
+cd_get_rem(	Cd* cd)
+{
+	if (cd != NULL)
+		return cd->rem;
 	else
 		return NULL;
 }
@@ -316,7 +329,16 @@ Cdtext *track_get_cdtext(Track *track)
 		return NULL;
 }
 
-void track_add_index(Track *track, long index)
+Rem*
+track_get_rem(	Track* track)
+{
+	if (track != NULL)
+		return track->rem;
+	else
+		return NULL;
+}
+
+void track_add_index(Track *track, long ind)
 {
 	if (MAXTRACK - 1 > track->nindex)
 		track->nindex++;
@@ -324,7 +346,7 @@ void track_add_index(Track *track, long index)
 		fprintf(stderr, "too many indexes\n");
 
 	/* this will overwrite last index if there were too many */
-	track->index[track->nindex - 1] = index;
+	track->index[track->nindex - 1] = ind;
 }
 
 int track_get_nindex(Track *track)
@@ -365,6 +387,12 @@ static void cd_track_dump(Track *track)
 		printf("cdtext:\n");
 		cdtext_dump(track->cdtext, 1);
 	}
+
+	if (track->rem != NULL)
+	{
+		fprintf(stdout, "rem:\n");
+		rem_dump(track->rem);
+	}
 }
 
 void cd_dump(Cd *cd)
@@ -378,6 +406,12 @@ void cd_dump(Cd *cd)
 	if (NULL != cd->cdtext) {
 		printf("cdtext:\n");
 		cdtext_dump(cd->cdtext, 0);
+	}
+
+	if (cd->rem != NULL)
+	{
+		fprintf(stdout, "rem:\n");
+		rem_dump(cd->rem);
 	}
 
 	for (i = 0; i < cd->ntrack; ++i) {

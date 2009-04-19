@@ -34,6 +34,7 @@ static Cd *cd = NULL;
 static Track *track = NULL;
 static Track *prev_track = NULL;
 static Cdtext *cdtext = NULL;
+static Rem *rem = NULL;
 static char *prev_filename = NULL;	/* last file in or before last track */
 static char *cur_filename = NULL;	/* last file in the last track */
 static char *new_filename = NULL;	/* last file in this track */
@@ -120,6 +121,13 @@ Cd *cue_parse_string(const char*);
 %type <ival> time
 %type <ival> cdtext_item
 
+/* REM */
+%type <ival> rem_item
+%token <ival> DATE
+%token <ival> REPLAYGAIN_ALBUM_GAIN
+%token <ival> REPLAYGAIN_ALBUM_PEAK
+%token <ival> REPLAYGAIN_TRACK_GAIN
+%token <ival> REPLAYGAIN_TRACK_PEAK
 %%
 
 cuefile
@@ -130,6 +138,7 @@ new_cd
 	: /* empty */ {
 		cd = cd_init();
 		cdtext = cd_get_cdtext(cd);
+		rem = cd_get_rem(cd);
 	}
 	;
 
@@ -142,6 +151,7 @@ global_statement
 	: CATALOG STRING '\n' { cd_set_catalog(cd, $2); }
 	| CDTEXTFILE STRING '\n' { cd_set_cdtextfile(cd, $2); }
 	| cdtext
+	| rem
 	| track_data
 	| error '\n'
 	;
@@ -180,6 +190,7 @@ new_track
 
 		track = cd_add_track(cd);
 		cdtext = track_get_cdtext(track);
+		rem = track_get_rem(track);
 
 		cur_filename = new_filename;
 		if (NULL != cur_filename)
@@ -218,6 +229,7 @@ track_statements
 
 track_statement
 	: cdtext
+	| rem
 	| FLAGS track_flags '\n'
 	| TRACK_ISRC STRING '\n' { track_set_isrc(track, $2); }
 	| PREGAP time '\n' { track_set_zero_pre(track, $2); }
@@ -283,6 +295,17 @@ time
 	| NUMBER ':' NUMBER ':' NUMBER { $$ = time_msf_to_frame($1, $3, $5); }
 	;
 
+rem
+	: rem_item STRING '\n' { rem_set($1, $2, rem); }
+	;
+
+rem_item
+	: DATE
+	| REPLAYGAIN_ALBUM_GAIN
+	| REPLAYGAIN_ALBUM_PEAK
+	| REPLAYGAIN_TRACK_GAIN
+	| REPLAYGAIN_TRACK_PEAK
+	;
 %%
 
 /* lexer interface */
