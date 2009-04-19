@@ -1,16 +1,31 @@
-# Makefile.am - process with automake to produce Makefile.in
+AM_YFLAGS		= -d
 
-BUILT_SOURCES = cue_parse.h toc_parse.h
-EXTRA_DIST = $(BUILT_SOURCES)
+EXTRA_DIST		= libcue.pc.in
 
-AM_YFLAGS = -d
-AM_LFLAGS = -olex.yy.c
+pkgconfigdir		= $(libdir)/pkgconfig
+pkgconfig_DATA		= libcue.pc
 
-noinst_LIBRARIES = libcuefile.a
 
-libcuefile_a_headers = cd.h cdtext.h cuefile.h cue.h time.h toc.h \
-                       cue_parse_prefix.h toc_parse_prefix.h
+INCLUDES		=				\
+			-I.				\
+			-Wall -Wmissing-declarations
 
-libcuefile_a_SOURCES = cd.c cdtext.c time.c cuefile.c cue_print.c toc_print.c \
-                       cue_parse.y cue_scan.l toc_parse.y toc_scan.l \
-                       $(libcuefile_a_headers)
+libcue_la_SOURCES	=				\
+			cd.c				\
+			cdtext.c			\
+			rem.c				\
+			time.c				\
+			cue_parser.y			\
+			cue_scanner.l
+
+libcueinclude_HEADERS	= 				\
+			libcue.h			\
+			cd.h				\
+			cdtext.h			\
+			rem.h				\
+			time.h
+
+lib_LTLIBRARIES		= libcue.la
+
+libcue_la_LDFLAGS	= -version-info @LIBCUE_LIBTOOL_VERSION@
+libcueincludedir	= $(includedir)/@LIBCUE_LIBRARY_NAME@-@LIBCUE_API_VERSION@/@LIBCUE_LIBRARY_NAME@

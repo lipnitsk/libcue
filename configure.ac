@@ -1,15 +1,51 @@
-# configure.ac - process with autoconf to create configure script
+AC_INIT([libcue], [0.1.0], [jochen.keil@gmail.com])
+AC_CONFIG_AUX_DIR([config])
+AC_CONFIG_MACRO_DIR([config])
+AM_INIT_AUTOMAKE([foreign 1.9 dist-bzip2])
+AM_CONFIG_HEADER([config.h])
 
-AC_INIT(cuetools,1.4.0-dev,sorensen@users.berlios.de)
-# getting conflicting errors about config.h.in
-AC_CONFIG_HEADERS(config.h)
-AM_INIT_AUTOMAKE($PACKAGE_NAME,$PACKAGE_VERSION)
+m4_define([package_major_version], [0])
+m4_define([package_minor_version], [1])
+m4_define([package_micro_version], [0])
+m4_define([package_version], [package_major_version.package_minor_version.package_micro_version])
+AM_INIT_AUTOMAKE
 
-AC_PROG_INSTALL
-AC_PROG_RANLIB
-AC_PROG_CC
-AM_PROG_LEX
+# This makes sure the right substitution is done
+[LIBCUE_MAJOR_VERSION]=package_major_version
+[LIBCUE_MINOR_VERSION]=package_minor_version
+[LIBCUE_MICRO_VERSION]=package_micro_version
+AC_SUBST([LIBCUE_MAJOR_VERSION])
+AC_SUBST([LIBCUE_MINOR_VERSION])
+AC_SUBST([LIBCUE_MICRO_VERSION])
+
+#  C:R:A
+#  C is updated on abi break
+#  R is on changed source code.
+#  A is age (added interfaces)
+
+LIBCUE_LIBRARY_NAME=libcue
+AC_SUBST(LIBCUE_LIBRARY_NAME)
+
+LIBCUE_LIBTOOL_VERSION=$LIBCUE_MAJOR_VERSION:$LIBCUE_MINOR_VERSION:$LIBCUE_MICRO_VERSION
+AC_SUBST(LIBCUE_LIBTOOL_VERSION)
+
+LIBCUE_API_VERSION=$LIBCUE_MAJOR_VERSION.$LIBCUE_MINOR_VERSION
+AC_SUBST(LIBCUE_API_VERSION)
+
+AC_CHECK_HEADERS([libintl.h, malloc.c, stddef.h])
+
+AC_FUNC_ALLOCA
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_TYPE_SIZE_T
+
+AC_PROG_CC_C99
+AC_PROG_LEX
 AC_PROG_YACC
+AM_PROG_LIBTOOL
 
-AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile src/lib/Makefile src/tools/Makefile extras/Makefile])
-AC_OUTPUT
+AC_OUTPUT([
+Makefile
+src/libcue/Makefile
+src/libcue/libcue.pc
+])

@@ -1,3 +1,7 @@
-# Makefile.am - process with automake to produce Makefile.in
+ACLOCAL_AMFLAGS		= -I config
 
-SUBDIRS = doc src extras
+AUTOMAKE_OPTIONS	= foreign 1.10 dist-bzip2
+
+SUBDIRS			= src/libcue
+
+EXTRA_DIST		= autogen.sh
