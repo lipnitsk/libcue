@@ -9,14 +9,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "config.h"
+
 #include "cd.h"
 #include "time.h"
-#include "cue_parse_prefix.h"
+
+#ifdef YY_BUF_SIZE
+#undef YY_BUF_SIZE
+#endif
+#define YY_BUF_SIZE 16384
 
 #define YYDEBUG 1
 
-extern int yylex();
-void yyerror (char *s);
+char fnamebuf[PARSER_BUFFER];
+
+/* debugging */
+//int yydebug = 1;
+
+extern int yylineno;
+extern FILE* yyin;
 
 static Cd *cd = NULL;
 static Track *track = NULL;
@@ -25,6 +37,21 @@ static Cdtext *cdtext = NULL;
 static char *prev_filename = NULL;	/* last file in or before last track */
 static char *cur_filename = NULL;	/* last file in the last track */
 static char *new_filename = NULL;	/* last file in this track */
+
+/* lexer interface */
+typedef struct yy_buffer_state* YY_BUFFER_STATE;
+
+int yylex(void);
+void yyerror(const char*);
+YY_BUFFER_STATE yy_scan_string(const char*);
+YY_BUFFER_STATE yy_create_buffer(FILE*, int);
+void yy_switch_to_buffer(YY_BUFFER_STATE);
+void yy_delete_buffer(YY_BUFFER_STATE);
+
+/* parser interface */
+int yyparse(void);
+Cd *cue_parse_file(FILE *fp);
+Cd *cue_parse_string(const char*);
 %}
 
 %start cuefile
@@ -123,9 +150,9 @@ track_data
 	: FFILE STRING file_format '\n' {
 		if (NULL != new_filename) {
 			yyerror("too many files specified\n");
-			free(new_filename);
 		}
-		new_filename = strdup($2);
+		new_filename = strncpy(fnamebuf, $2, sizeof(fnamebuf));
+		new_filename[strlen(new_filename)] = '\0';
 	}
 	;
 
@@ -267,12 +294,37 @@ void yyerror (const char *s)
 
 Cd *cue_parse_file(FILE *fp)
 {
-	cue_yyin = fp;
-	yydebug = 0;
+	YY_BUFFER_STATE buffer = NULL;
 
-	if (0 == yyparse()) {
+	yyin = fp;
+
+	buffer = yy_create_buffer(yyin, YY_BUF_SIZE);
+
+	yy_switch_to_buffer(buffer);
+
+	if (0 == yyparse())
+	{
+		yy_delete_buffer(buffer);
 		return cd;
 	}
+
+	yy_delete_buffer(buffer);
+	return NULL;
+}
+
+Cd *cue_parse_string(const char* string)
+{
+	YY_BUFFER_STATE buffer = NULL;
+
+	buffer = yy_scan_string(string);
+
+	if (0 == yyparse())
+	{
+		yy_delete_buffer(buffer);
+		return cd;
+	}
+
+	yy_delete_buffer(buffer);
 
 	return NULL;
 }
