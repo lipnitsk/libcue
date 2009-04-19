@@ -8,9 +8,13 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+#include "config.h"
+
 #include "cd.h"
-#include "cue_parse_prefix.h"
-#include "cue_parse.h"
+#include "cue_parser.h"
+
+char buffer[PARSER_BUFFER];
 
 int yylineno = 1;
 
