@@ -79,6 +79,12 @@ typedef struct Track Track;
 /* return pointer to CD structure */
 Cd *cd_init(void);
 
+Track *track_init(void);
+
+void track_delete(struct Track* track);
+
+void cd_delete(struct Cd* cd);
+
 void cd_dump(Cd *cd);
 
 /*

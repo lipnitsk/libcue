@@ -60,6 +60,47 @@ Cd *cd_init(void)
 	return cd;
 }
 
+void track_delete(struct Track* track)
+{
+	if (track != NULL)
+	{
+		cdtext_delete(track_get_cdtext(track));
+
+		rem_free(track_get_rem(track));
+
+		free(track->isrc);
+
+		free(track->zero_pre.name);
+
+		free(track->zero_post.name);
+
+		free(track->file.name);
+
+		free(track);
+	}
+}
+
+void cd_delete(struct Cd* cd)
+{
+	int i = 0;
+
+	if (cd != NULL)
+	{
+		free(cd->catalog);
+
+		free(cd->cdtextfile);
+
+		for (i = 0; i < cd->ntrack; i++)
+			track_delete(cd->track[i]);
+
+		cdtext_delete(cd_get_cdtext(cd));
+
+		rem_free(cd_get_rem(cd));
+
+		free(cd);
+	}
+}
+
 Track *track_init(void)
 {
 	Track *track = NULL;
