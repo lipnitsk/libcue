@@ -44,6 +44,14 @@ AC_PROG_LEX
 AC_PROG_YACC
 AM_PROG_LIBTOOL
 
+AC_ARG_WITH([parser-buffer],
+	    [AS_HELP_STRING([--with-parser-buffer=SIZE],
+			    [Size of parser buffer. Default of 1024 should be enough])],
+	    [parser_buffer="$withval"],
+	    [parser_buffer=1024])
+
+AC_DEFINE_UNQUOTED([PARSER_BUFFER], [$parser_buffer], [Size of parser buffer])
+
 AC_OUTPUT([
 Makefile
 src/libcue/Makefile
