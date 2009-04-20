@@ -18,10 +18,16 @@ AC_SUBST([LIBCUE_MAJOR_VERSION])
 AC_SUBST([LIBCUE_MINOR_VERSION])
 AC_SUBST([LIBCUE_MICRO_VERSION])
 
-#  C:R:A
-#  C is updated on abi break
-#  R is on changed source code.
-#  A is age (added interfaces)
+# CURRENT:REVISION:AGE
+#
+# CURRENT
+# The most recent interface number that this library implements.
+# REVISION
+# The implementation number of the current interface.
+# AGE
+# The difference between the newest and oldest interfaces that this library
+# implements. In other words, the library implements all the interface numbers in
+# the range from number current - age to current.
 
 LIBCUE_LIBRARY_NAME=libcue
 AC_SUBST(LIBCUE_LIBRARY_NAME)
