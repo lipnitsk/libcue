@@ -1,0 +1,38 @@
+* set version number to 1.2.0 (libtool)
+
+* update comment on libtool versioning
+
+* update copyright notifications
+
+* switch copyright licence to 2-clause BSD
+
+* update AUTHORS to reflect recent changes
+
+* dump old README
+
+* simple test program (not yet supported by autotools, needs flac lib
+
+* autoheader/config.h support for parser buffer size
+
+* update autotool build system
+
+* update main interface/api file
+
+* support for custom cue values hidden as rem comments
+
+* add buffer size to config.h
+
+* prevent the parser from memory leaking/replace strdup() with
+  fixed-size array and strncpy/implement yacc|bison macros for buffer
+  creation/deletion
+
+* prevent the lexer from memory leaking/replace strdup() with
+  fixed-size array and strncpy
+
+* cd_delete() and track_delete() methods
+
+* support for cdtext filename
+
+* major code clean up
+
+* initial clean up for libcue
