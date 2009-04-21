@@ -43,11 +43,13 @@ rem_free(	Rem* rem)
 	if (rem == NULL)
 		return;
 
+	Rem* ptr = rem;
+
 	do
 	{
-		free(rem->value);
+		free(ptr->value);
 	}
-	while ((++rem)->cmt != REM_END);
+	while ((++ptr)->cmt != REM_END);
 
 	free(rem);
 }
