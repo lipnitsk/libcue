@@ -1,10 +1,7 @@
 /*
  * Copyright (c) 2004, 2005, 2006, 2007, Svend Sorensen
- *
- * rem methods:
  * Copyright (c) 2009, Jochen Keil
- *
- * For details, see the file COPYING in this distribution.
+ * For license terms, see the file COPYING in this distribution.
  */
 
 #include <stdio.h>

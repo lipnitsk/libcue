@@ -1,39 +1,16 @@
-Please read this:
+== IMPORTANT ==
 
-There are two licenses involved in this software.
+There are two licences involved in this software.
 
+The whole libcue project is released under GPLv2 due to its heritage
+from cuetools. Some code was added independently from cuetools. These
+files have a copyright notice and licensing information on their own.
+
+All files that contain this note:
 'Copyright (c) 2004, 2005, 2006, 2007, Svend Sorensen'
-means that the code is released as GPLv2, see the complete text below.
+are taken from cuetools and are therefore under licence of GPLv2.
 
-'Copyright (c) 2009, Jochen Keil'
-marks code which is released as 2-clause BSD license (and only with this
-notice alone, if there is an additional copyright notice about Svend
-Sorensen, GPL applies!). The complete BSD licensing text can be found as
-an attachment too.
-
-
-2-clause BSD:
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY Jochen Keil ''AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL Jochen Keil BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-GPLv2:
+== IMPORTANT ==
 		    GNU GENERAL PUBLIC LICENSE
 		       Version 2, June 1991
 

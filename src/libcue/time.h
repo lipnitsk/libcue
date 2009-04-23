@@ -1,6 +1,7 @@
 /*
- * Copyright (c) 2004, 2005, 2006, 2007, Svend Sorensen
- * Copyright (c) 2009, Jochen Keil
+ * time.h -- time declarations
+ *
+ * Copyright (C) 2004, 2005, 2006, 2007 Svend Sorensen
  * For license terms, see the file COPYING in this distribution.
  */
 
