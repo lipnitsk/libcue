@@ -23,6 +23,7 @@ nonws		[^ \t\r\n]
 
 %option yylineno
 %option noyywrap
+%option noinput
 %option nounput
 
 %s NAME
