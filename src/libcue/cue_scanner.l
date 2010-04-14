@@ -15,14 +15,13 @@
 
 char buffer[PARSER_BUFFER];
 
-int yylineno = 1;
-
 int yylex(void);
 %}
 
 ws		[ \t\r]
 nonws		[^ \t\r\n]
 
+%option yylineno
 %option noyywrap
 %option nounput
 
