@@ -1,11 +1,11 @@
-AC_INIT([libcue], [1.3.0], [jochen.keil@gmail.com])
+AC_INIT([libcue], [1.4.0], [jochen.keil@gmail.com])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([config])
 AM_INIT_AUTOMAKE([foreign 1.9 dist-bzip2])
 AM_CONFIG_HEADER([config.h])
 
 m4_define([package_major_version], [1])
-m4_define([package_minor_version], [3])
+m4_define([package_minor_version], [4])
 m4_define([package_micro_version], [0])
 m4_define([package_version], [package_major_version.package_minor_version.package_micro_version])
 AM_INIT_AUTOMAKE
