@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Jochen Keil
+ * Copyright (c) 2009, 2010 Jochen Keil
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:

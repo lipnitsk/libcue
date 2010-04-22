@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2004, 2005, 2006, 2007, Svend Sorensen
- * Copyright (c) 2009, Jochen Keil
+ * Copyright (c) 2009, 2010 Jochen Keil
  * For license terms, see the file COPYING in this distribution.
  */
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Jochen Keil
+ * Copyright (c) 2009, 2010 Jochen Keil
  * For license terms, see the file COPYING in this distribution.
  */
 
