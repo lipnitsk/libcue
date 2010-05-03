@@ -1,3 +1,27 @@
+Changes since 1.3.0
+
+* force make to *not* build things in parallel since this tends to mess things up
+
+* update changelog
+
+* set version number to 1.4.0 (libtool)
+
+* update copyright
+
+* fix compiler warning: input() defined but not used
+
+* new flex behaviour: explicitly enable yylineno usage
+
+* new automake macro name
+
+* possible fix for compilation problems on win32
+
+* update COPYING and corrected copyright notices in several source code files
+
+* Update general COPYRIGHT notice as well as several file specific notifications
+
+* update ChangeLog and NEWS
+
 Changes since 1.2.0
 
 * fix for invalid pointer

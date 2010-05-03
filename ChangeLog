@@ -1,3 +1,5 @@
+* force make to *not* build things in parallel since this tends to mess things up
+
 * update changelog
 
 * set version number to 1.4.0 (libtool)
