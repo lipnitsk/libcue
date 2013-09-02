@@ -11,7 +11,7 @@
 #include "cd.h"
 #include "cue_parser.h"
 
-char buffer[PARSER_BUFFER];
+char yy_buffer[PARSER_BUFFER];
 
 int yylex(void);
 %}
@@ -33,18 +33,18 @@ nonws		[^ \t\r\n]
 
 \'([^\']|\\\')*\'	|
 \"([^\"]|\\\")*\"	{
-		yylval.sval = strncpy(	buffer,
+		yylval.sval = strncpy(	yy_buffer,
 					++yytext,
-					(yyleng > sizeof(buffer) ? sizeof(buffer) : yyleng));
+					(yyleng > sizeof(yy_buffer) ? sizeof(yy_buffer) : yyleng));
 		yylval.sval[yyleng - 2] = '\0';
 		BEGIN(INITIAL);
 		return STRING;
 		}
 
 <NAME>{nonws}+	{
-		yylval.sval = strncpy(	buffer,
+		yylval.sval = strncpy(	yy_buffer,
 					yytext,
-					(yyleng > sizeof(buffer) ? sizeof(buffer) : yyleng));
+					(yyleng > sizeof(yy_buffer) ? sizeof(yy_buffer) : yyleng));
 		yylval.sval[yyleng] = '\0';
 		BEGIN(INITIAL);
 		return STRING;
@@ -114,9 +114,9 @@ REM		{ BEGIN(REM); /* exclusive rules for special exceptions */ }
 <REM>\n		{ BEGIN(INITIAL); }
 
 <RPG>{nonws}+	{
-		yylval.sval = strncpy(	buffer,
+		yylval.sval = strncpy(	yy_buffer,
 					yytext,
-					(yyleng > sizeof(buffer) ? sizeof(buffer) : yyleng));
+					(yyleng > sizeof(yy_buffer) ? sizeof(yy_buffer) : yyleng));
 		yylval.sval[yyleng] = '\0';
 		BEGIN(SKIP);
 		return STRING;
