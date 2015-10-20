@@ -14,6 +14,7 @@
 
 #define MAXTRACK	99	/* Red Book track limit */
 #define MAXINDEX	99	/* Red Book index limit */
+#define PARSER_BUFFER   1024    /* Parser buffer size */
 
 /*
  * disc modes

@@ -9,8 +9,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "config.h"
-
 #include "cd.h"
 #include "time.h"
 

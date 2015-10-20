@@ -8,8 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
-
 #include "cd.h"
 #include "cue_parser.h"
 
