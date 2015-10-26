@@ -158,8 +158,12 @@ track_data
 		if (NULL != new_filename) {
 			yyerror("too many files specified\n");
 		}
-		new_filename = strncpy(fnamebuf, $2, sizeof(fnamebuf));
-		new_filename[strlen(new_filename)] = '\0';
+		if (track && track_get_index(track, 1) == -1) {
+			track_set_filename (track, $2);
+		} else {
+			new_filename = strncpy(fnamebuf, $2, sizeof(fnamebuf));
+			new_filename[strlen(new_filename)] = '\0';
+		}
 	}
 	;
 
@@ -247,7 +251,7 @@ track_statement
 
 			long idx00 = track_get_index (track, 0);
 
-			if (idx00 != -1)
+			if (idx00 != -1 && $3 != 0)
 				track_set_zero_pre (track, $3 - idx00);
 		}
 
