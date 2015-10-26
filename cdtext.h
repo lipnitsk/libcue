@@ -9,35 +9,12 @@
 #ifndef CDTEXT_H
 #define CDTEXT_H
 
-#include <stdio.h>
-
-/* cdtext pack type indicators */
-enum Pti {
-	PTI_TITLE,	/* title of album or track titles */
-	PTI_PERFORMER,	/* name(s) of the performer(s) */
-	PTI_SONGWRITER,	/* name(s) of the songwriter(s) */
-	PTI_COMPOSER,	/* name(s) of the composer(s) */
-	PTI_ARRANGER,	/* name(s) of the arranger(s) */
-	PTI_MESSAGE,	/* message(s) from the content provider and/or artist */
-	PTI_DISC_ID,	/* (binary) disc identification information */
-	PTI_GENRE,	/* (binary) genre identification and genre information */
-	PTI_TOC_INFO1,	/* (binary) table of contents information */
-	PTI_TOC_INFO2,	/* (binary) second table of contents information */
-	PTI_RESERVED1,	/* reserved */
-	PTI_RESERVED2,	/* reserved */
-	PTI_RESERVED3,	/* reserved */
-	PTI_RESERVED4,	/* reserved for content provider only */
-	PTI_UPC_ISRC,	/* UPC/EAN code of the album and ISRC code of each track */
-	PTI_SIZE_INFO,	/* (binary) size information of the block */
-	PTI_END		/* terminating PTI (for stepping through PTIs) */
-};
+#include "libcue.h"
 
 enum PtiFormat {
 	FORMAT_CHAR,		/* single or double byte character string */
 	FORMAT_BINARY		/* binary data */
 };
-
-typedef struct Cdtext Cdtext;
 
 /* return a pointer to a new Cdtext */
 Cdtext *cdtext_init(void);
@@ -50,9 +27,6 @@ int cdtext_is_empty(Cdtext *cdtext);
 
 /* set CD-TEXT field to value for PTI pti */
 void cdtext_set(int pti, char *value, Cdtext *cdtext);
-
-/* returns pointer to CD-TEXT value for PTI pti */
-char *cdtext_get(int pti, Cdtext *cdtext);
 
 /*
  * returns appropriate string for PTI pti

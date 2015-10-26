@@ -83,7 +83,7 @@ void cdtext_set(int pti, char *value, Cdtext *cdtext)
 }
 
 /* returns value for pti, NULL if pti is not found */
-char *cdtext_get(int pti, Cdtext *cdtext)
+char *cdtext_get(enum Pti pti, const Cdtext *cdtext)
 {
 	for (; PTI_END != cdtext->pti; cdtext++)
 		if (pti == cdtext->pti)

@@ -24,7 +24,7 @@
 #ifndef REM_H
 #define REM_H
 
-#include <stdio.h>
+#include "libcue.h"
 
 enum Cmt {
 	REM_DATE,	/* date of cd/track */
@@ -34,8 +34,6 @@ enum Cmt {
 	REM_REPLAYGAIN_TRACK_PEAK,
 	REM_END		/* terminating REM (for stepping through REMs) */
 };
-
-typedef struct Rem Rem;
 
 /**
  * return new allocated rem struct
