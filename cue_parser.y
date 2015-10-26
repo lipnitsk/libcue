@@ -231,24 +231,27 @@ track_statement
 	| TRACK_ISRC STRING '\n' { track_set_isrc(track, $2); }
 	| PREGAP time '\n' { track_set_zero_pre(track, $2); }
 	| INDEX NUMBER time '\n' {
-		int i = track_get_nindex(track);
 		long prev_length;
 
-		if (0 == i) {
-			/* first index */
-			track_set_start(track, $3);
-
-			if (NULL != prev_track && NULL == cur_filename) {
-				/* track shares file with previous track */
-				prev_length = $3 - track_get_start(prev_track);
-				track_set_length(prev_track, prev_length);
-			}
+		/* Set previous track length if it has not been set */
+		if (NULL != prev_track && NULL == cur_filename
+		    && track_get_length (prev_track) == 0) {
+			/* track shares file with previous track */
+			prev_length = $3 - track_get_start(prev_track);
+			track_set_length(prev_track, prev_length);
 		}
 
-		for (; i <= $2; i++)
-			track_add_index(track, \
-			track_get_zero_pre(track) + $3 \
-			- track_get_start(track));
+		if (1 == $2) {
+			/* INDEX 01 */
+			track_set_start(track, $3);
+
+			long idx00 = track_get_index (track, 0);
+
+			if (idx00 != -1)
+				track_set_zero_pre (track, $3 - idx00);
+		}
+
+		track_set_index (track, $2, $3);
 	}
 	| POSTGAP time '\n' { track_set_zero_post(track, $2); }
 	| track_data

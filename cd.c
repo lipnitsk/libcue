@@ -27,10 +27,8 @@ struct Track {
 	char *isrc;			/* IRSC Code (5.22.4) 12 bytes */
 	Cdtext *cdtext;			/* CD-TEXT */
 	Rem* rem;
-	int nindex;			/* number of indexes */
 	long index[MAXINDEX];		/* indexes (in frames) (5.29.2.5)
-					 * relative to start of track
-					 * index[0] should always be zero */
+					 * relative to start of file */
 };
 
 struct Cd {
@@ -132,7 +130,10 @@ Track *track_init(void)
 		track->isrc = NULL;
 		track->cdtext = cdtext_init();
 		track->rem = rem_new();
-		track->nindex = 0;
+
+                int i;
+                for (i=0; i<MAXTRACK; i++)
+                   track->index[i] = -1;
 	}
 
 	return track;
@@ -337,25 +338,19 @@ track_get_rem(	Track* track)
 		return NULL;
 }
 
-void track_add_index(Track *track, long ind)
+void track_set_index(Track *track, int i, long ind)
 {
-	if (MAXTRACK - 1 > track->nindex)
-		track->nindex++;
-	else
+	if (i >= MAXTRACK) {
 		fprintf(stderr, "too many indexes\n");
+                return;
+        }
 
-	/* this will overwrite last index if there were too many */
-	track->index[track->nindex - 1] = ind;
-}
-
-int track_get_nindex(Track *track)
-{
-	return track->nindex;
+	track->index[i] = ind;
 }
 
 long track_get_index(Track *track, int i)
 {
-	if ((0 <= i) && (i < track->nindex))
+	if ((0 <= i) && (i < MAXTRACK))
 		return track->index[i];
 
 	return -1;
@@ -377,10 +372,10 @@ static void cd_track_dump(Track *track)
 	printf("sub_mode: %d\n", track->sub_mode);
 	printf("flags: 0x%x\n", track->flags);
 	printf("isrc: %s\n", track->isrc);
-	printf("indexes: %d\n", track->nindex);
 
-	for (i = 0; i < track->nindex; ++i)
-		printf("index %d: %ld\n", i, track->index[i]);
+	for (i = 0; i < MAXTRACK; ++i)
+                if (track->index[i] != -1)
+                        printf("index %d: %ld\n", i, track->index[i]);
 
 	if (NULL != track->cdtext) {
 		printf("cdtext:\n");

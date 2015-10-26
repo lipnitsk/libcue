@@ -165,8 +165,7 @@ Cdtext *track_get_cdtext(Track *track);
 
 Rem* track_get_rem(Track* track);
 
-void track_add_index(Track *track, long index);
-int track_get_nindex(Track *track);
+void track_set_index(Track *track, int i, long index);
 long track_get_index(Track *track, int i);
 
 #endif
