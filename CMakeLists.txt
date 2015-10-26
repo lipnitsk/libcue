@@ -46,6 +46,27 @@ INSTALL(TARGETS cue
 INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/ DESTINATION include/libcue
 	FILES_MATCHING PATTERN "*.h")
 
+ENABLE_TESTING()
+ADD_EXECUTABLE(standard_cue ${CMAKE_SOURCE_DIR}/t/standard_cue.c)
+TARGET_LINK_LIBRARIES(standard_cue cue)
+
+ADD_EXECUTABLE(single_file_idx_00 ${CMAKE_SOURCE_DIR}/t/single_idx_00.c)
+TARGET_LINK_LIBRARIES(single_file_idx_00 cue)
+
+ADD_EXECUTABLE(multiple_files ${CMAKE_SOURCE_DIR}/t/multiple_files.c)
+TARGET_LINK_LIBRARIES(multiple_files cue)
+
+ADD_EXECUTABLE(noncompliant ${CMAKE_SOURCE_DIR}/t/noncompliant.c)
+TARGET_LINK_LIBRARIES(noncompliant cue)
+INCLUDE(Dart)
+
+SET(DART_TESTING_TIMEOUT 5)
+ADD_TEST(standard_cue_test standard_cue)
+ADD_TEST(single_file_idx_00_test single_file_idx_00)
+ADD_TEST(multiple_files_test multiple_files)
+ADD_TEST(noncompliant_test noncompliant)
+
+
 SET(CPACK_PACKAGE_VERSION "${PACKAGE_VERSION}")
 SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 SET(CPACK_SOURCE_GENERATOR "TXZ")
