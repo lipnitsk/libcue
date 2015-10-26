@@ -235,7 +235,7 @@ track_statement
 
 		/* Set previous track length if it has not been set */
 		if (NULL != prev_track && NULL == cur_filename
-		    && track_get_length (prev_track) == 0) {
+		    && track_get_length (prev_track) == -1) {
 			/* track shares file with previous track */
 			prev_length = $3 - track_get_start(prev_track);
 			track_set_length(prev_track, prev_length);

@@ -111,18 +111,18 @@ Track *track_init(void)
 	} else {
 		track->zero_pre.type = DATA_ZERO;
 		track->zero_pre.name = NULL;
-		track->zero_pre.start = 0;
-		track->zero_pre.length = 0;
+		track->zero_pre.start = -1;
+		track->zero_pre.length = -1;
 
 		track->file.type = DATA_AUDIO;
 		track->file.name = NULL;
-		track->file.start = 0;
-		track->file.length = 0;
+		track->file.start = -1;
+		track->file.length = -1;
 
 		track->zero_post.type = DATA_ZERO;
 		track->zero_post.name = NULL;
-		track->zero_post.start = 0;
-		track->zero_post.length = 0;
+		track->zero_post.start = -1;
+		track->zero_post.length = -1;
 
 		track->mode = MODE_AUDIO;
 		track->sub_mode = SUB_MODE_RW;
