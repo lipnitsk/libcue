@@ -2,7 +2,7 @@
 
 libcue provides an API for parsing and extracting data from [CUE sheets](https://en.wikipedia.org/wiki/Cue_sheet_%28computing%29).
 
-libcue was originally forked from [cuetools](https://github.com/svend/cuetools) and then enhanced by Jochen Keil to add additional features.
+libcue was originally forked from [cuetools](https://github.com/svend/cuetools) and then enhanced to add additional features.
 
 Please refer to [libcue.h](https://github.com/lipnitsk/libcue/blob/master/libcue.h) for the API.
 
