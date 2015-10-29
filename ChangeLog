@@ -1,3 +1,25 @@
+libcue (2.0.0) UNRELEASED
+
+	[Ilya Lipnitskiy]
+	* Add Travis-CI support
+
+	* Move exported function declarations to libcue.h. Change default
+	  symbol visibility to hidden. Only export parsing and accessor
+	  functions. Make functions more const-correct
+
+	* Add support for noncompliant CUEs produced by EAC
+
+	* Return -1 instead of 0 for unknown values
+
+	* Refactor CUE INDEX parsing to set pregap and previous track length
+	  correctly
+
+	* Add tests for various CUE formats
+
+	* Move the project from automake to cmake
+
+	* Clean up the changelog
+
 libcue (1.4.0)
 
 	[Avuton Olrich]
