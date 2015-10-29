@@ -168,7 +168,7 @@ void cd_set_cdtextfile(Cd *cd, char *cdtextfile)
 	cd->cdtextfile = strdup(cdtextfile);
 }
 
-char *cd_get_cdtextfile(const Cd *cd)
+const char *cd_get_cdtextfile(const Cd *cd)
 {
 	return cd->cdtextfile;
 }
@@ -228,7 +228,7 @@ void track_set_filename(Track *track, char *filename)
 	track->file.name = strdup(filename);
 }
 
-char *track_get_filename(const Track *track)
+const char *track_get_filename(const Track *track)
 {
 	return track->file.name;
 }
@@ -315,7 +315,7 @@ void track_set_isrc(Track *track, char *isrc)
 	track->isrc = strdup(isrc);
 }
 
-char *track_get_isrc(const Track *track)
+const char *track_get_isrc(const Track *track)
 {
 	return track->isrc;
 }

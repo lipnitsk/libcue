@@ -37,7 +37,7 @@ static char* cue_test()
    Cdtext *cdtext = cd_get_cdtext (cd);
    mu_assert ("error getting CDTEXT", cdtext != NULL);
 
-   char *val;
+   const char *val;
    val = cdtext_get (PTI_PERFORMER, cdtext);
    mu_assert ("error getting CD performer", val != NULL);
    mu_assert ("error validating CD performer", strcmp (val, "My Bloody Valentine") == 0);

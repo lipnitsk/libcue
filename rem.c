@@ -106,8 +106,8 @@ rem_set(	unsigned int cmt,
 	} while ((++rem)->cmt != REM_END);
 }
 
-char*
-rem_get(	unsigned int cmt,
+const char*
+rem_get(	RemType cmt,
 		Rem* rem)
 {
 	if (rem == NULL)

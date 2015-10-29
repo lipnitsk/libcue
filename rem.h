@@ -26,15 +26,6 @@
 
 #include "libcue.h"
 
-enum Cmt {
-	REM_DATE,	/* date of cd/track */
-	REM_REPLAYGAIN_ALBUM_GAIN,
-	REM_REPLAYGAIN_ALBUM_PEAK,
-	REM_REPLAYGAIN_TRACK_GAIN,
-	REM_REPLAYGAIN_TRACK_PEAK,
-	REM_END		/* terminating REM (for stepping through REMs) */
-};
-
 /**
  * return new allocated rem struct
  */
@@ -60,14 +51,6 @@ rem_is_emtpy(	Rem*);
 void
 rem_set(	unsigned int,
 		char*,
-		Rem*);
-
-/**
- * return pointer to value for rem comment
- * @param unsigned int: enum of rem comment
- */
-char*
-rem_get(	unsigned int,
 		Rem*);
 
 /**
