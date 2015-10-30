@@ -162,7 +162,7 @@ track_data
 			track_set_filename (track, $2);
 		} else {
 			new_filename = strncpy(fnamebuf, $2, sizeof(fnamebuf));
-			new_filename[strlen(new_filename)] = '\0';
+			new_filename[sizeof(fnamebuf) - 1] = '\0';
 		}
 	}
 	;
