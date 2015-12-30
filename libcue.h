@@ -6,55 +6,13 @@
 #ifndef LIBCUE_H
 #define LIBCUE_H
 
+#include <stdio.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define CUE_EXPORT __attribute__((visibility("default")))
-
-/* ADTs */
-typedef struct Cd Cd;
-typedef struct Track Track;
-typedef struct Cdtext Cdtext;
-typedef struct Rem Rem;
-typedef enum Pti Pti;
-typedef enum TrackFlag TrackFlag;
-typedef enum RemType RemType;
-
-CUE_EXPORT Cd* cue_parse_file(FILE*);
-CUE_EXPORT Cd* cue_parse_string(const char*);
-CUE_EXPORT void cd_delete(Cd* cd);
-
-/* CD functions */
-CUE_EXPORT enum DiscMode cd_get_mode(const Cd *cd);
-CUE_EXPORT const char *cd_get_cdtextfile(const Cd *cd);
-/*
- * return number of tracks in cd
- */
-CUE_EXPORT int cd_get_ntrack(const Cd *cd);
-
-/* CDTEXT functions */
-CUE_EXPORT Cdtext *cd_get_cdtext(const Cd *cd);
-CUE_EXPORT Cdtext *track_get_cdtext(const Track *track);
-CUE_EXPORT const char *cdtext_get(enum Pti pti, const Cdtext *cdtext);
-
-CUE_EXPORT Rem* cd_get_rem(const Cd* cd);
-CUE_EXPORT Rem* track_get_rem(const Track* track);
-/**
- * return pointer to value for rem comment
- * @param unsigned int: enum of rem comment
- */
-CUE_EXPORT const char* rem_get(unsigned int, Rem*);
-
-/* Track functions */
-CUE_EXPORT Track *cd_get_track(const Cd *cd, int i);
-CUE_EXPORT const char *track_get_filename(const Track *track);
-CUE_EXPORT long track_get_start(const Track *track);
-CUE_EXPORT long track_get_length(const Track *track);
-CUE_EXPORT enum TrackMode track_get_mode(const Track *track);
-CUE_EXPORT enum TrackSubMode track_get_sub_mode(const Track *track);
-CUE_EXPORT int track_is_set_flag(const Track *track, enum TrackFlag flag);
-CUE_EXPORT long track_get_zero_pre(const Track *track);
-CUE_EXPORT long track_get_zero_post(const Track *track);
-CUE_EXPORT const char *track_get_isrc(const Track *track);
-CUE_EXPORT long track_get_index(const Track *track, int i);
-
 
 /*
  * disc modes
@@ -142,5 +100,56 @@ enum RemType {
 	REM_REPLAYGAIN_TRACK_PEAK,
 	REM_END		/* terminating REM (for stepping through REMs) */
 };
+
+/* ADTs */
+typedef struct Cd Cd;
+typedef struct Track Track;
+typedef struct Cdtext Cdtext;
+typedef struct Rem Rem;
+typedef enum Pti Pti;
+typedef enum TrackFlag TrackFlag;
+typedef enum RemType RemType;
+
+CUE_EXPORT Cd* cue_parse_file(FILE*);
+CUE_EXPORT Cd* cue_parse_string(const char*);
+CUE_EXPORT void cd_delete(Cd* cd);
+
+/* CD functions */
+CUE_EXPORT enum DiscMode cd_get_mode(const Cd *cd);
+CUE_EXPORT const char *cd_get_cdtextfile(const Cd *cd);
+/*
+ * return number of tracks in cd
+ */
+CUE_EXPORT int cd_get_ntrack(const Cd *cd);
+
+/* CDTEXT functions */
+CUE_EXPORT Cdtext *cd_get_cdtext(const Cd *cd);
+CUE_EXPORT Cdtext *track_get_cdtext(const Track *track);
+CUE_EXPORT const char *cdtext_get(enum Pti pti, const Cdtext *cdtext);
+
+CUE_EXPORT Rem* cd_get_rem(const Cd* cd);
+CUE_EXPORT Rem* track_get_rem(const Track* track);
+/**
+ * return pointer to value for rem comment
+ * @param unsigned int: enum of rem comment
+ */
+CUE_EXPORT const char* rem_get(unsigned int, Rem*);
+
+/* Track functions */
+CUE_EXPORT Track *cd_get_track(const Cd *cd, int i);
+CUE_EXPORT const char *track_get_filename(const Track *track);
+CUE_EXPORT long track_get_start(const Track *track);
+CUE_EXPORT long track_get_length(const Track *track);
+CUE_EXPORT enum TrackMode track_get_mode(const Track *track);
+CUE_EXPORT enum TrackSubMode track_get_sub_mode(const Track *track);
+CUE_EXPORT int track_is_set_flag(const Track *track, enum TrackFlag flag);
+CUE_EXPORT long track_get_zero_pre(const Track *track);
+CUE_EXPORT long track_get_zero_post(const Track *track);
+CUE_EXPORT const char *track_get_isrc(const Track *track);
+CUE_EXPORT long track_get_index(const Track *track, int i);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
