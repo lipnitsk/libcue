@@ -46,6 +46,14 @@ static char* cue_test()
    mu_assert ("error getting CD title", val != NULL);
    mu_assert ("error validating CD title", strcmp (val, "Loveless") == 0);
 
+   val = cdtext_get (PTI_GENRE, cdtext);
+   mu_assert ("error getting CD genre", val != NULL);
+   mu_assert ("error validating CD genre", strcmp (val, "Alternative") == 0);
+
+   val = rem_get (REM_DATE, rem);
+   mu_assert ("error getting CD date", val != NULL);
+   mu_assert ("error validating CD date", strcmp (val, "1991") == 0);
+
    int ival = cd_get_ntrack (cd);
    mu_assert ("invalid number of tracks", ival == 2);
 
