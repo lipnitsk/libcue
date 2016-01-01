@@ -1,5 +1,11 @@
 libcue (2.0.0) UNRELEASED
 
+	[John Lindgren]
+	* Parse REM GENRE lines
+
+	[Svyatoslav Mishyn]
+	* Clean up time conversion functions
+
 	[Ilya Lipnitskiy]
 	* Add Travis-CI support
 
