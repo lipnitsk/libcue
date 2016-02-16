@@ -1,4 +1,4 @@
-libcue (2.0.0) UNRELEASED
+libcue (2.0.0)
 
 	[John Lindgren]
 	* Parse REM GENRE lines
