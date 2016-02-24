@@ -1,3 +1,10 @@
+libcue (2.0.1)
+	[Peter Lemenkov]
+	* Rename buffer to yy_buffer
+
+	[Ilya Lipnitskiy]
+	* Create the libcue/libcue.h symlink for compatibility
+
 libcue (2.0.0)
 
 	[John Lindgren]
