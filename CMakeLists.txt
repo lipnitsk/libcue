@@ -67,6 +67,9 @@ TARGET_LINK_LIBRARIES(multiple_files cue)
 
 ADD_EXECUTABLE(noncompliant ${CMAKE_SOURCE_DIR}/t/noncompliant.c)
 TARGET_LINK_LIBRARIES(noncompliant cue)
+
+ADD_EXECUTABLE(issue10 ${CMAKE_SOURCE_DIR}/t/issue10.c)
+TARGET_LINK_LIBRARIES(issue10 cue)
 INCLUDE(Dart)
 
 SET(DART_TESTING_TIMEOUT 5)
@@ -74,6 +77,7 @@ ADD_TEST(standard_cue_test standard_cue)
 ADD_TEST(single_file_idx_00_test single_file_idx_00)
 ADD_TEST(multiple_files_test multiple_files)
 ADD_TEST(noncompliant_test noncompliant)
+ADD_TEST(NAME issue10_test COMMAND issue10 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/t)
 
 
 SET(CPACK_PACKAGE_VERSION "${PACKAGE_VERSION}")
