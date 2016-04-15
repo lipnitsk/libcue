@@ -1,3 +1,8 @@
+libcue (2.1.0)
+	[Ilya Lipnitskiy]
+	* Add FLAC token support (issue #9)
+	* Clean up static vars in the parser to prevent double frees (issue #10)
+
 libcue (2.0.1)
 	[Peter Lemenkov]
 	* Rename buffer to yy_buffer
