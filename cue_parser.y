@@ -72,6 +72,7 @@ Cd *cue_parse_string(const char*);
 %token AIFF
 %token WAVE
 %token MP3
+%token FLAC
 
 /* track */
 %token TRACK
@@ -183,6 +184,7 @@ file_format
 	| AIFF
 	| WAVE
 	| MP3
+	| FLAC
 	;
 
 new_track
