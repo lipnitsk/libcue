@@ -11,7 +11,7 @@ int tests_run;
 #define MSF_TO_F(m,s,f) ((f) + ((m)*60 + (s))*FPS)
 
 static char cue[] = 
-               "FILE \"The Specials - Singles - 01 - Gangsters.wav\" WAVE\n"
+               "FILE \"The Specials - Singles - 01 - Gangsters.flac\" FLAC\n"
                   "TRACK 01 AUDIO\n"
                      "TITLE \"Gangsters\"\n"
                      "PERFORMER \"The Specials\"\n"
@@ -20,7 +20,7 @@ static char cue[] =
                      "TITLE \"Rudi, A Message To You\"\n"
                      "PERFORMER \"The Specials\"\n"
                      "INDEX 00 02:47:74\n"
-               "FILE \"The Specials - Singles - 02 - Rudi, A Message To You.wav\" WAVE\n"
+               "FILE \"The Specials - Singles - 02 - Rudi, A Message To You.flac\" FLAC\n"
                      "INDEX 01 00:00:00\n";
 
 static char* cue_test()
@@ -51,7 +51,7 @@ static char* cue_test()
 
    val = track_get_filename (track);
    mu_assert ("error getting track filename", val != NULL);
-   mu_assert ("error validating track filename", strcmp (val, "The Specials - Singles - 01 - Gangsters.wav") == 0);
+   mu_assert ("error validating track filename", strcmp (val, "The Specials - Singles - 01 - Gangsters.flac") == 0);
 
    cdtext = track_get_cdtext (track);
    mu_assert ("error getting track CDTEXT", cdtext != NULL);
@@ -78,7 +78,7 @@ static char* cue_test()
 
    val = track_get_filename (track);
    mu_assert ("error getting track filename", val != NULL);
-   mu_assert ("error validating track filename", strcmp (val, "The Specials - Singles - 02 - Rudi, A Message To You.wav") == 0);
+   mu_assert ("error validating track filename", strcmp (val, "The Specials - Singles - 02 - Rudi, A Message To You.flac") == 0);
 
    cdtext = track_get_cdtext (track);
    mu_assert ("error getting track CDTEXT", cdtext != NULL);
