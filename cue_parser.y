@@ -321,6 +321,18 @@ void yyerror (const char *s)
 	fprintf(stderr, "%d: %s\n", yylineno, s);
 }
 
+static void reset_static_vars()
+{
+	cd = NULL;
+	track = NULL;
+	prev_track = NULL;
+	cdtext = NULL;
+	rem = NULL;
+	prev_filename = NULL;
+	cur_filename = NULL;
+	new_filename = NULL;
+}
+
 Cd *cue_parse_file(FILE *fp)
 {
 	YY_BUFFER_STATE buffer = NULL;
@@ -331,14 +343,15 @@ Cd *cue_parse_file(FILE *fp)
 
 	yy_switch_to_buffer(buffer);
 
-	if (0 == yyparse())
-	{
-		yy_delete_buffer(buffer);
-		return cd;
-	}
+	Cd *ret_cd = NULL;
+
+	if (0 == yyparse()) ret_cd = cd;
+	else ret_cd = NULL;
 
 	yy_delete_buffer(buffer);
-	return NULL;
+	reset_static_vars();
+
+	return ret_cd;
 }
 
 Cd *cue_parse_string(const char* string)
@@ -347,13 +360,13 @@ Cd *cue_parse_string(const char* string)
 
 	buffer = yy_scan_string(string);
 
-	if (0 == yyparse())
-	{
-		yy_delete_buffer(buffer);
-		return cd;
-	}
+	Cd *ret_cd = NULL;
+
+	if (0 == yyparse()) ret_cd = cd;
+	else ret_cd = NULL;
 
 	yy_delete_buffer(buffer);
+	reset_static_vars();
 
-	return NULL;
+	return ret_cd;
 }
