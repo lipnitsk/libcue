@@ -36,7 +36,7 @@ nonws		[^ \t\r\n]
 		yylval.sval = strncpy(	yy_buffer,
 					++yytext,
 					(yyleng > sizeof(yy_buffer) ? sizeof(yy_buffer) : yyleng));
-		yylval.sval[yyleng - 2] = '\0';
+		yylval.sval[(yyleng > sizeof(yy_buffer) ? sizeof(yy_buffer) : yyleng) - 2] = '\0';
 		BEGIN(INITIAL);
 		return STRING;
 		}
@@ -45,7 +45,7 @@ nonws		[^ \t\r\n]
 		yylval.sval = strncpy(	yy_buffer,
 					yytext,
 					(yyleng > sizeof(yy_buffer) ? sizeof(yy_buffer) : yyleng));
-		yylval.sval[yyleng] = '\0';
+		yylval.sval[(yyleng > sizeof(yy_buffer) ? sizeof(yy_buffer) : yyleng)] = '\0';
 		BEGIN(INITIAL);
 		return STRING;
 		}
@@ -118,7 +118,7 @@ REM		{ BEGIN(REM); /* exclusive rules for special exceptions */ }
 		yylval.sval = strncpy(	yy_buffer,
 					yytext,
 					(yyleng > sizeof(yy_buffer) ? sizeof(yy_buffer) : yyleng));
-		yylval.sval[yyleng] = '\0';
+		yylval.sval[(yyleng > sizeof(yy_buffer) ? sizeof(yy_buffer) : yyleng)] = '\0';
 		BEGIN(SKIP);
 		return STRING;
 		}
