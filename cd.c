@@ -192,7 +192,7 @@ cd_get_rem(const Cd* cd)
 
 Track *cd_add_track(Cd *cd)
 {
-	if (MAXTRACK - 1 > cd->ntrack)
+	if (MAXTRACK > cd->ntrack)
 		cd->ntrack++;
 	else
 		fprintf(stderr, "too many tracks\n");
