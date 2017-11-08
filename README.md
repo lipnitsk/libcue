@@ -8,6 +8,17 @@ Please refer to [libcue.h](https://github.com/lipnitsk/libcue/blob/master/libcue
 
 Some usage examples are also available in the test cases under [t/](https://github.com/lipnitsk/libcue/tree/master/t).
 
+# Compiling
+
+```
+mkdir bin
+cd bin
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release ../
+make
+make test
+make install
+```
+
 # Contributing
 
 One should note that while the CUE format is supported by various tools, such as media players or CD ripping tools, there is no single standard that strictly describes the CUE syntax.
