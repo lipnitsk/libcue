@@ -132,7 +132,7 @@ Track *track_init(void)
 		track->rem = rem_new();
 
                 int i;
-                for (i=0; i<MAXTRACK; i++)
+                for (i=0; i<MAXINDEX; i++)
                    track->index[i] = -1;
 	}
 
@@ -339,7 +339,7 @@ track_get_rem(const Track* track)
 
 void track_set_index(Track *track, int i, long ind)
 {
-	if (i >= MAXTRACK) {
+	if (i >= MAXINDEX) {
 		fprintf(stderr, "too many indexes\n");
                 return;
         }
@@ -349,7 +349,7 @@ void track_set_index(Track *track, int i, long ind)
 
 long track_get_index(const Track *track, int i)
 {
-	if ((0 <= i) && (i < MAXTRACK))
+	if ((0 <= i) && (i < MAXINDEX))
 		return track->index[i];
 
 	return -1;
@@ -372,7 +372,7 @@ static void cd_track_dump(Track *track)
 	printf("flags: 0x%x\n", track->flags);
 	printf("isrc: %s\n", track->isrc);
 
-	for (i = 0; i < MAXTRACK; ++i)
+	for (i = 0; i < MAXINDEX; ++i)
                 if (track->index[i] != -1)
                         printf("index %d: %ld\n", i, track->index[i]);
 
