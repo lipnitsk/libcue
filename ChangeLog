@@ -1,3 +1,22 @@
+libcue (2.2.0)
+	[Tom M]
+	* cmake: Use GNUInstallDirs and don't hard-code install paths (PR #12)
+
+	[John Lindgren]
+	* cmake: Set RUNTIME to CMAKE_INSTALL_BINDIR (issue #13)
+
+	[Wolfgang Hotwagner]
+	* Fix memory corruption in cue_scanner.l (PR #15)
+
+	[John Fitzgerald]
+	* Use MAXINDEX instead of MAXTRACK when indexing INDEX entries
+	* Allow for 100 INDEX entries
+	* Replace fprintf(3) to stdout with printf(3)
+
+	[Ilya Lipnitskiy]
+	* pkgconfig: Use dynamic directories from GNUInstallDirs
+	* Port 99 track fix from cuetools and add a test case
+
 libcue (2.1.0)
 	[Ilya Lipnitskiy]
 	* Add FLAC token support (issue #9)
