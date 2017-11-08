@@ -383,7 +383,7 @@ static void cd_track_dump(Track *track)
 
 	if (track->rem != NULL)
 	{
-		fprintf(stdout, "rem:\n");
+		printf("rem:\n");
 		rem_dump(track->rem);
 	}
 }
@@ -403,7 +403,7 @@ void cd_dump(Cd *cd)
 
 	if (cd->rem != NULL)
 	{
-		fprintf(stdout, "rem:\n");
+		printf("rem:\n");
 		rem_dump(cd->rem);
 	}
 
