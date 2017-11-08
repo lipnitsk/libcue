@@ -13,8 +13,8 @@
 #include "cdtext.h"
 #include "rem.h"
 
-#define MAXTRACK	99	/* Red Book track limit */
-#define MAXINDEX	99	/* Red Book index limit */
+#define MAXTRACK	99	/* Red Book track limit (from 01 to 99) */
+#define MAXINDEX	99	/* Red Book index limit (from 00 to 99) */
 #define PARSER_BUFFER   1024    /* Parser buffer size */
 
 

@@ -27,7 +27,7 @@ struct Track {
 	char *isrc;			/* IRSC Code (5.22.4) 12 bytes */
 	Cdtext *cdtext;			/* CD-TEXT */
 	Rem* rem;
-	long index[MAXINDEX];		/* indexes (in frames) (5.29.2.5)
+	long index[MAXINDEX+1];		/* indexes (in frames) (5.29.2.5)
 					 * relative to start of file */
 };
 
@@ -132,7 +132,7 @@ Track *track_init(void)
 		track->rem = rem_new();
 
                 int i;
-                for (i=0; i<MAXINDEX; i++)
+                for (i=0; i<=MAXINDEX; i++)
                    track->index[i] = -1;
 	}
 
@@ -339,7 +339,7 @@ track_get_rem(const Track* track)
 
 void track_set_index(Track *track, int i, long ind)
 {
-	if (i >= MAXINDEX) {
+	if (i > MAXINDEX) {
 		fprintf(stderr, "too many indexes\n");
                 return;
         }
@@ -349,7 +349,7 @@ void track_set_index(Track *track, int i, long ind)
 
 long track_get_index(const Track *track, int i)
 {
-	if ((0 <= i) && (i < MAXINDEX))
+	if ((0 <= i) && (i <= MAXINDEX))
 		return track->index[i];
 
 	return -1;
@@ -372,7 +372,7 @@ static void cd_track_dump(Track *track)
 	printf("flags: 0x%x\n", track->flags);
 	printf("isrc: %s\n", track->isrc);
 
-	for (i = 0; i < MAXINDEX; ++i)
+	for (i = 0; i <= MAXINDEX; ++i)
                 if (track->index[i] != -1)
                         printf("index %d: %ld\n", i, track->index[i]);
 
