@@ -94,3 +94,9 @@ SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 SET(CPACK_SOURCE_GENERATOR "TBZ2")
 SET(CPACK_SOURCE_IGNORE_FILES ".*~;\\\\.swp$;/\\\\.git/;build/")
 INCLUDE(CPack)
+
+INCLUDE(CheckCSourceCompiles)
+check_c_source_compiles("
+void log_fn(const char *format, ...) __attribute__ ((format (printf, 1, 2)));
+int main(void) { return 0; }
+" HAVE_FUNC_ATTRIBUTE_FORMAT)
