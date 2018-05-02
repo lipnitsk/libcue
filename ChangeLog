@@ -1,3 +1,13 @@
+libcue (2.2.1)
+	[Ilya Lipnitskiy]
+	* cmake: Check for __attribute__ format
+
+	[Fabrice Fontaine]
+	* cmake: Don't check for C++ presence as libcue is C-only
+
+	[Thomas Petazzoni]
+	* cmake: Don't force SHARED when building the library
+
 libcue (2.2.0)
 	[Tom M]
 	* cmake: Use GNUInstallDirs and don't hard-code install paths (PR #12)
