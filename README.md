@@ -10,6 +10,8 @@ Some usage examples are also available in the test cases under [t/](https://gith
 
 # Compiling
 
+NOTE: Use `-DBUILD_SHARED_LIBS=ON` to build as a shared library.
+
 ```
 mkdir bin
 cd bin
