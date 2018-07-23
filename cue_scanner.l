@@ -23,6 +23,7 @@ nonws		[^ \t\r\n]
 %option noyywrap
 %option noinput
 %option nounput
+%option caseless
 
 %s NAME
 %x REM
@@ -135,5 +136,8 @@ REM		{ BEGIN(REM); /* exclusive rules for special exceptions */ }
 ^{ws}*\n	{ yylineno++; /* blank line */ }
 \n		{ yylineno++; return '\n'; }
 .		{ fprintf(stderr, "bad character '%c'\n", yytext[0]); }
+
+<<EOF>>>	{ static int once = 0; return (once = !once) ? '\n' : 0; }
+
 
 %%
