@@ -136,4 +136,7 @@ REM		{ BEGIN(REM); /* exclusive rules for special exceptions */ }
 \n		{ yylineno++; return '\n'; }
 .		{ fprintf(stderr, "bad character '%c'\n", yytext[0]); }
 
+<<EOF>>>	{ static int once = 0; return (once = !once) ? '\n' : 0; }
+
+
 %%
