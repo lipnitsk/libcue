@@ -23,6 +23,7 @@ nonws		[^ \t\r\n]
 %option noyywrap
 %option noinput
 %option nounput
+%option caseless
 
 %s NAME
 %x REM
