@@ -278,7 +278,7 @@ track_flag
 	;
 
 cdtext
-	: cdtext_item STRING '\n' { cdtext_set ($1, $2, cdtext); }
+	: cdtext_item STRING '\n' { cue_cdtext_set ($1, $2, cdtext); }
 	;
 
 cdtext_item
@@ -304,7 +304,7 @@ time
 
 rem
 	: rem_item STRING '\n' { rem_set($1, $2, rem); }
-	| XXX_GENRE STRING '\n' { cdtext_set($1, $2, cdtext); }
+	| XXX_GENRE STRING '\n' { cue_cdtext_set($1, $2, cdtext); }
 	;
 
 rem_item
