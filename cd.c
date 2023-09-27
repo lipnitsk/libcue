@@ -339,7 +339,7 @@ track_get_rem(const Track* track)
 
 void track_set_index(Track *track, int i, long ind)
 {
-	if (i > MAXINDEX) {
+	if (i < 0 || i > MAXINDEX) {
 		fprintf(stderr, "too many indexes\n");
                 return;
         }
