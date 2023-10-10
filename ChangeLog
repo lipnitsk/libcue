@@ -1,3 +1,9 @@
+libcue (2.3.0)
+	[Vlad Stulikov, Vasiliy Sazonov]
+	* Bug fix - no EOF handling
+
+	[Kevin Backhouse]
+	* Fix CVE-2023-43641
 libcue (2.2.1)
 	[Ilya Lipnitskiy]
 	* cmake: Check for __attribute__ format
