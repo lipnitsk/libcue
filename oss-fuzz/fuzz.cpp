@@ -4,7 +4,7 @@
 #include <string.h>
 #include "libcue.h"
 
-extern int LLVMFuzzerTestOneInput (const uint8_t *data, size_t size);
+extern "C" int LLVMFuzzerTestOneInput (const uint8_t *data, size_t size);
 
 #ifndef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
 
@@ -33,7 +33,7 @@ int main (int argc, char **argv)
     fseek (in, 0, SEEK_END);
     sz = ftell (in);
     rewind (in);
-    zBuf = realloc (zBuf, sz);
+    zBuf = (uint8_t*)realloc (zBuf, sz);
     if (zBuf == 0)
     {
       fprintf(stderr, "cannot malloc() for %d bytes\n", (int)sz);
@@ -60,9 +60,10 @@ int main (int argc, char **argv)
 
 #endif
 
-extern int LLVMFuzzerTestOneInput (const uint8_t *data, size_t size)
+extern "C" int LLVMFuzzerTestOneInput (const uint8_t *data, size_t size)
 {
-    char* str = malloc (size + 1);
+    char* str = (char*)malloc (size + 1);
+
     if (!str)
         return -1;
 
