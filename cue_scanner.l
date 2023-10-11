@@ -45,7 +45,7 @@ nonws		[^ \t\r\n]
 <NAME>{nonws}+	{
 		yylval.sval = strncpy(	yy_buffer,
 					yytext,
-					(sizeof(yy_buffer) - 1 );
+					sizeof(yy_buffer) - 1 );
 		yylval.sval[sizeof(yy_buffer) - 1] = '\0';
 		BEGIN(INITIAL);
 		return STRING;
