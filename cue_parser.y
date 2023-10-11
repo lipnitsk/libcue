@@ -348,7 +348,11 @@ Cd *cue_parse_file(FILE *fp)
 	Cd *ret_cd = NULL;
 
 	if (0 == yyparse()) ret_cd = cd;
-	else ret_cd = NULL;
+	else
+	{
+		ret_cd = NULL;
+		if (cd) cd_delete(cd);
+	}
 
 	yy_delete_buffer(buffer);
 	reset_static_vars();
@@ -365,7 +369,11 @@ Cd *cue_parse_string(const char* string)
 	Cd *ret_cd = NULL;
 
 	if (0 == yyparse()) ret_cd = cd;
-	else ret_cd = NULL;
+	else
+	{
+		ret_cd = NULL;
+		if (cd) cd_delete(cd);
+	}
 
 	yy_delete_buffer(buffer);
 	reset_static_vars();
