@@ -2,23 +2,56 @@ name: Build
 on: [push, pull_request]
 jobs:
   build_and_check:
-    name: Build and check
+    name: Build and test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
            fetch-depth: 0
-      - name: Install Ubuntu Prerequisites
+      - name: Install prerequisites
         run: |
           sudo apt-get update
           sudo apt-get install -y make autoconf automake libtool bison flex
-      - name: Build libcue library
+      - name: Build
         run: |
           mkdir build && cd build
           cmake -DCMAKE_BUILD_TYPE=Release ../
           make
-      - name: Check
+      - name: Test
         run: |
           cd build
           make test
+  test_regressions:
+    name: Run ${{ matrix.engine }}-${{ matrix.sanitizer }} fuzzer for regressions
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer: [address, undefined, memory]
+        engine: [libfuzzer, afl, honggfuzz]
+    container:
+      image: gcr.io/oss-fuzz-base/base-builder
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install prerequisites
+        run: |
+          apt-get update
+          apt-get install -y make autoconf automake libtool bison flex
+          cd ..
+          cp -r libcue/ $SRC/libcue
+          cd $SRC/libcue/
+          echo "$SRC/libcue/oss-fuzz/build.sh" > $SRC/build.sh
+      - name: Compile fuzzer
+        run: |
+          export FUZZING_LANGUAGE=c
+          export ARCHITECTURE=x86_64
+          export FUZZING_ENGINE=${{ matrix.engine }}
+          export SANITIZER=${{ matrix.sanitizer }}
+          compile
+          oss-fuzz/build.sh
+      - name: Check for regressions
+        if: ${{ matrix.engine == 'libfuzzer' }}
+        run: |
+          unzip $OUT/fuzz_seed_corpus.zip -d $OUT/fuzz_seed_corpus/
+          find $OUT/fuzz_seed_corpus/ -name '*.cue' | xargs -- $OUT/fuzz
