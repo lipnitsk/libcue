@@ -11,6 +11,9 @@
 
 long time_msf_to_frame(int m, int s, int f)
 {
+	if (m < 0 || m > 99 || s < 0 || s >= 60 || f < 0 || f >= 75) {
+		return -1;
+	}
 	return (m * 60 + s) * 75 + f;
 }
 
