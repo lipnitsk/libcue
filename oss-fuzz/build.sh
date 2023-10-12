@@ -2,7 +2,7 @@
 
 mkdir bin
 cd bin
-cmake -DBUILD_FUZZER=ON -DCMAKE_BUILD_TYPE=Release ../
+cmake -DCMAKE_BUILD_TYPE=Release ../
 make
 
 fuzzer_name=fuzz
