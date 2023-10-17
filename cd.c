@@ -195,9 +195,11 @@ Track *cd_add_track(Cd *cd)
 	if (MAXTRACK > cd->ntrack)
 		cd->ntrack++;
 	else
+	{
 		fprintf(stderr, "too many tracks\n");
+		return cd->track[cd->ntrack - 1];
+	}
 
-	/* this will reinit last track if there were too many */
 	cd->track[cd->ntrack - 1] = track_init();
 
 	return cd->track[cd->ntrack - 1];

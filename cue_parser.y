@@ -193,6 +193,8 @@ new_track
 		prev_track = track;
 
 		track = cd_add_track(cd);
+		if (prev_track == track)
+			prev_track = NULL;
 		cdtext = track_get_cdtext(track);
 		rem = track_get_rem(track);
 
