@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 cd $WORK
-cmake -DCMAKE_BUILD_TYPE=Release $SRC/libcue
+cmake -DBUILD_FUZZER=ON -DCMAKE_BUILD_TYPE=Release $SRC/libcue
 make
 
 fuzzer_name=fuzz
