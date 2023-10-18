@@ -1,4 +1,6 @@
-# Overview [![Build Status](https://travis-ci.org/lipnitsk/libcue.svg)](https://travis-ci.org/lipnitsk/libcue)
+[![Build Status](https://github.com/lipnitsk/libcue/actions/workflows/build.yaml/badge.svg?event=push)]([https://app.travis-ci.com/lipnitsk/libcue](https://github.com/lipnitsk/libcue/actions)) [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/libcue.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:libcue)  
+
+# Overview
 
 libcue provides an API for parsing and extracting data from [CUE sheets](https://en.wikipedia.org/wiki/Cue_sheet_%28computing%29).
 
