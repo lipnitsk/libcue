@@ -361,7 +361,7 @@ Cd *cue_parse_file(FILE *fp)
 	else
 	{
 		ret_cd = NULL;
-		if (cd) cd_delete(cd);
+		cd_delete(cd);
 	}
 
 	yy_delete_buffer(buffer);
@@ -383,7 +383,7 @@ Cd *cue_parse_string(const char* string)
 	else
 	{
 		ret_cd = NULL;
-		if (cd) cd_delete(cd);
+		cd_delete(cd);
 	}
 
 	yy_delete_buffer(buffer);
