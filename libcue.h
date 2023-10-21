@@ -5,9 +5,6 @@
 
 #ifndef LIBCUE_H
 #define LIBCUE_H
-
-#include <stdio.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
