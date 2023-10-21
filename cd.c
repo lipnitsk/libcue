@@ -154,17 +154,13 @@ enum DiscMode cd_get_mode(const Cd *cd)
 
 void cd_set_catalog(Cd *cd, char *catalog)
 {
-	if (cd->catalog)
-		free(cd->catalog);
-
+	free(cd->catalog);
 	cd->catalog = strdup(catalog);
 }
 
 void cd_set_cdtextfile(Cd *cd, char *cdtextfile)
 {
-	if (cd->cdtextfile)
-		free(cd->cdtextfile);
-
+	free(cd->cdtextfile);
 	cd->cdtextfile = strdup(cdtextfile);
 }
 
@@ -224,9 +220,7 @@ Track *cd_get_track(const Cd *cd, int i)
 
 void track_set_filename(Track *track, char *filename)
 {
-	if (track->file.name)
-		free(track->file.name);
-
+	free(track->file.name);
 	track->file.name = strdup(filename);
 }
 
@@ -311,9 +305,7 @@ long track_get_zero_post(const Track *track)
 }
 void track_set_isrc(Track *track, char *isrc)
 {
-	if (track->isrc)
-		free(track->isrc);
-
+	free(track->isrc);
 	track->isrc = strdup(isrc);
 }
 
