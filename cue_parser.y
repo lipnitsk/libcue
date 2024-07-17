@@ -131,7 +131,7 @@ Cd *cue_parse_string(const char*);
 %%
 
 cuefile
-	: new_cd global_statements track_list
+	: new_cd global_statements track_list end_cd
 	;
 
 new_cd
@@ -317,6 +317,11 @@ rem_item
 	| REPLAYGAIN_ALBUM_PEAK
 	| REPLAYGAIN_TRACK_GAIN
 	| REPLAYGAIN_TRACK_PEAK
+	;
+
+end_cd
+	: /* empty */
+	| '\n' end_cd
 	;
 %%
 
