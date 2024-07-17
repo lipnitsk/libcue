@@ -160,6 +160,11 @@ void cd_set_catalog(Cd *cd, char *catalog)
 	cd->catalog = strdup(catalog);
 }
 
+const char *cd_get_catalog(const Cd *cd)
+{
+	return cd->catalog;
+}
+
 void cd_set_cdtextfile(Cd *cd, char *cdtextfile)
 {
 	if (cd->cdtextfile)

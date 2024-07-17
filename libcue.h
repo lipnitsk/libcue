@@ -116,6 +116,7 @@ CUE_EXPORT void cd_delete(Cd* cd);
 
 /* CD functions */
 CUE_EXPORT enum DiscMode cd_get_mode(const Cd *cd);
+CUE_EXPORT const char *cd_get_catalog(const Cd *cd);
 CUE_EXPORT const char *cd_get_cdtextfile(const Cd *cd);
 /*
  * return number of tracks in cd
