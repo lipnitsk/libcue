@@ -21,7 +21,7 @@ static char cue[] =
                      "PERFORMER \"The Specials\"\n"
                      "INDEX 00 02:47:74\n"
                "FILE \"The Specials - Singles - 02 - Rudi, A Message To You.flac\" FLAC\n"
-                     "INDEX 01 00:00:00\n";
+                     "INDEX 01 00:00:00\n\n\n\n\n\n";
 
 static char* cue_test()
 {

@@ -23,7 +23,7 @@ static char cue[] =
       "TITLE \"Helicopter\"\n"
       "PERFORMER \"Bloc Party\"\n"
       "INDEX 00 07:42:69\n"
-      "INDEX 01 07:44:69\n";
+      "INDEX 01 07:44:69";
 
 static char* cue_test()
 {
