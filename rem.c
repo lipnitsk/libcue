@@ -108,7 +108,7 @@ rem_set(	unsigned int cmt,
 
 const char*
 rem_get(	RemType cmt,
-		Rem* rem)
+		const Rem* rem)
 {
 	if (rem == NULL)
 		return NULL;
