@@ -212,7 +212,7 @@ int cd_get_ntrack(const Cd *cd)
 
 Track *cd_get_track(const Cd *cd, int i)
 {
-	if ((0 < i) && (i <= cd->ntrack) && (cd != NULL))
+	if ((0 < i) && (cd != NULL) && (i <= cd->ntrack))
 		return cd->track[i - 1];
 	else
 		return NULL;
