@@ -42,7 +42,7 @@ rem_free(	Rem*);
  * return true if allocated rem struct is empty
  */
 int
-rem_is_emtpy(	Rem*);
+rem_is_empty(	Rem*);
 
 /**
  * set value of rem comment
