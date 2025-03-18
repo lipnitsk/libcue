@@ -73,7 +73,7 @@ rem_free(	Rem* rem)
 }
 
 int
-rem_is_emtpy(	Rem* rem)
+rem_is_empty(	Rem* rem)
 {
 	if (rem == NULL)
 		return 1;
