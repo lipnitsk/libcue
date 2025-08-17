@@ -12,7 +12,11 @@
 extern "C" {
 #endif
 
-#define CUE_EXPORT __attribute__((visibility("default")))
+#ifdef _MSC_VER
+	#define CUE_EXPORT __declspec(dllexport)
+#else
+	#define CUE_EXPORT __attribute__((visibility("default")))
+#endif
 
 /*
  * disc modes
