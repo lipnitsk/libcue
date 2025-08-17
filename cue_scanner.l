@@ -24,6 +24,7 @@ nonws		[^ \t\r\n]
 %option noinput
 %option nounput
 %option caseless
+%option never-interactive
 
 %s NAME
 %x REM
