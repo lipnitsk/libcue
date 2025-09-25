@@ -54,6 +54,10 @@ static char* cue_test()
    mu_assert ("error getting CD date", val != NULL);
    mu_assert ("error validating CD date", strcmp (val, "1991") == 0);
 
+   val = rem_get (REM_COMMENT, rem);
+   mu_assert ("error getting CD comment", val != NULL);
+   mu_assert ("error validating CD comment", strcmp (val, "ExactAudioCopy v0.95b4") == 0);
+
    int ival = cd_get_ntrack (cd);
    mu_assert ("invalid number of tracks", ival == 2);
 

@@ -122,6 +122,7 @@ Cd *cue_parse_string(const char*);
 /* REM */
 %type <ival> rem_item
 %token <ival> DATE
+%token <ival> COMMENT
 %token <ival> XXX_GENRE /* parsed in REM but stored in CD-TEXT */
 %token <ival> REPLAYGAIN_ALBUM_GAIN
 %token <ival> REPLAYGAIN_ALBUM_PEAK
@@ -311,6 +312,7 @@ rem
 
 rem_item
 	: DATE
+	| COMMENT
 	| REPLAYGAIN_ALBUM_GAIN
 	| REPLAYGAIN_ALBUM_PEAK
 	| REPLAYGAIN_TRACK_GAIN
