@@ -81,8 +81,6 @@ TARGET_LINK_LIBRARIES(99_tracks cue)
 if(BUILD_FUZZER)
 	ADD_EXECUTABLE(fuzz ${CMAKE_SOURCE_DIR}/oss-fuzz/fuzz.cpp)
 	TARGET_LINK_LIBRARIES(fuzz cue $ENV{LIB_FUZZING_ENGINE})
-	ADD_EXECUTABLE(fuzz_full_coverage ${CMAKE_SOURCE_DIR}/oss-fuzz/fuzz_full_coverage.cpp)
-	TARGET_LINK_LIBRARIES(fuzz_full_coverage cue $ENV{LIB_FUZZING_ENGINE})
 endif()
 
 INCLUDE(Dart)
