@@ -102,9 +102,6 @@ ISRC		{ BEGIN(NAME); return TRACK_ISRC; }
 REM		{ BEGIN(REM); /* exclusive rules for special exceptions */ }
 
 <REM>DATE			{ BEGIN(NAME); yylval.ival = REM_DATE; return DATE; }
-<REM>COMMENT			{ BEGIN(NAME); yylval.ival = REM_COMMENT; return COMMENT; }
-<REM>DISCNUMBER			{ BEGIN(NAME); yylval.ival = REM_DISCNUMBER; return DISCNUMBER; }
-<REM>TOTALDISCS			{ BEGIN(NAME); yylval.ival = REM_TOTALDISCS; return TOTALDISCS; }
 <REM>GENRE			{ BEGIN(NAME); yylval.ival = PTI_GENRE; return XXX_GENRE; }
 <REM>REPLAYGAIN_ALBUM_GAIN 	{ BEGIN(RPG); yylval.ival = REM_REPLAYGAIN_ALBUM_GAIN;
 							return REPLAYGAIN_ALBUM_GAIN; }
@@ -114,6 +111,9 @@ REM		{ BEGIN(REM); /* exclusive rules for special exceptions */ }
 							return REPLAYGAIN_TRACK_GAIN; }
 <REM>REPLAYGAIN_TRACK_PEAK	{ BEGIN(RPG); yylval.ival = REM_REPLAYGAIN_TRACK_PEAK;
 							return REPLAYGAIN_TRACK_PEAK; }
+<REM>COMMENT			{ BEGIN(NAME); yylval.ival = REM_COMMENT; return COMMENT; }
+<REM>DISCNUMBER			{ BEGIN(NAME); yylval.ival = REM_DISCNUMBER; return DISCNUMBER; }
+<REM>TOTALDISCS			{ BEGIN(NAME); yylval.ival = REM_TOTALDISCS; return TOTALDISCS; }
 
 <REM>{ws}+	{ BEGIN(REM); }
 <REM>.		{ BEGIN(REM); }
