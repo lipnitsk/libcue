@@ -64,6 +64,10 @@ static char* cue_test()
    mu_assert ("error getting CD total discs", val != NULL);
    mu_assert ("error validating CD total discs", strcmp (val, "2") == 0);
 
+   val = cdtext_get (PTI_DISC_ID, cdtext);
+   mu_assert ("error getting CD disc id", val != NULL);
+   mu_assert ("error validating CD disc id", strcmp (val, "860B640B") == 0);
+
    val = rem_get (REM_COMMENT, rem);
    mu_assert ("error getting CD comment", val != NULL);
    mu_assert ("error validating CD comment", strcmp (val, "ExactAudioCopy v0.95b4") == 0);
