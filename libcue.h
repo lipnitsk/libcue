@@ -133,7 +133,7 @@ CUE_EXPORT int cd_get_ntrack(const Cd *cd);
 /* CDTEXT functions */
 CUE_EXPORT Cdtext *cd_get_cdtext(const Cd *cd);
 CUE_EXPORT Cdtext *track_get_cdtext(const Track *track);
-CUE_EXPORT const char *cdtext_get(enum Pti pti, const Cdtext *cdtext);
+CUE_EXPORT const char *cue_cdtext_get(enum Pti pti, const Cdtext *cdtext);
 
 CUE_EXPORT Rem* cd_get_rem(const Cd* cd);
 CUE_EXPORT Rem* track_get_rem(const Track* track);

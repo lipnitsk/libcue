@@ -52,7 +52,7 @@ Cd *cd_init(void)
 		cd->mode = MODE_CD_DA;
 		cd->catalog = NULL;
 		cd->cdtextfile = NULL;
-		cd->cdtext = cdtext_init();
+		cd->cdtext = cue_cdtext_init();
 		cd->rem = rem_new();
 		cd->ntrack = 0;
 	}
@@ -64,7 +64,7 @@ void track_delete(struct Track* track)
 {
 	if (track != NULL)
 	{
-		cdtext_delete(track_get_cdtext(track));
+		cue_cdtext_delete(track_get_cdtext(track));
 
 		rem_free(track_get_rem(track));
 
@@ -93,7 +93,7 @@ void cd_delete(struct Cd* cd)
 		for (i = 0; i < cd->ntrack; i++)
 			track_delete(cd->track[i]);
 
-		cdtext_delete(cd_get_cdtext(cd));
+		cue_cdtext_delete(cd_get_cdtext(cd));
 
 		rem_free(cd_get_rem(cd));
 
@@ -128,7 +128,7 @@ Track *track_init(void)
 		track->sub_mode = SUB_MODE_RW;
 		track->flags = FLAG_NONE;
 		track->isrc = NULL;
-		track->cdtext = cdtext_init();
+		track->cdtext = cue_cdtext_init();
 		track->rem = rem_new();
 
                 int i;
@@ -377,7 +377,7 @@ static void cd_track_dump(Track *track)
 
 	if (NULL != track->cdtext) {
 		printf("cdtext:\n");
-		cdtext_dump(track->cdtext, 1);
+		cue_cdtext_dump(track->cdtext, 1);
 	}
 
 	if (track->rem != NULL)
@@ -397,7 +397,7 @@ void cd_dump(Cd *cd)
 	printf("cdtextfile: %s\n", cd->cdtextfile);
 	if (NULL != cd->cdtext) {
 		printf("cdtext:\n");
-		cdtext_dump(cd->cdtext, 0);
+		cue_cdtext_dump(cd->cdtext, 0);
 	}
 
 	if (cd->rem != NULL)
