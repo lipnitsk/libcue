@@ -5,10 +5,11 @@
  * For license terms, see the file COPYING in this distribution.
  */
 
-#include "time.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "cue_time.h"
 
 long time_msf_to_frame(int m, int s, int f)
 {
