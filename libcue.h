@@ -18,6 +18,9 @@ extern "C" {
 	#define CUE_EXPORT __attribute__((visibility("default")))
 #endif
 
+/* Frames per second */
+#define CUE_FPS (75)
+
 /*
  * disc modes
  * DATA FORM OF MAIN DATA (5.29.2.8)

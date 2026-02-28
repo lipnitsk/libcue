@@ -6,9 +6,7 @@
 
 int tests_run;
 
-/* Frames per second */
-#define FPS (75)
-#define MSF_TO_F(m,s,f) ((f) + ((m)*60 + (s))*FPS)
+#define MSF_TO_F(m,s,f) ((f) + ((m)*60 + (s))*CUE_FPS)
 
 static char cue[] = 
                "FILE \"The Specials - Singles - 01 - Gangsters.flac\" FLAC\n"
