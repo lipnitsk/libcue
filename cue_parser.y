@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include "cd.h"
-#include "time.h"
+#include "cue_time.h"
 
 #ifdef YY_BUF_SIZE
 #undef YY_BUF_SIZE
