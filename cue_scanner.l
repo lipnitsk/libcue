@@ -124,8 +124,8 @@ REM		{ BEGIN(REM); /* exclusive rules for special exceptions */ }
 <RPG>{nonws}+	{
 		yylval.sval = strncpy(	yy_buffer,
 					yytext,
-					(yyleng > sizeof(yy_buffer) ? sizeof(yy_buffer) : yyleng));
-		yylval.sval[(yyleng > sizeof(yy_buffer) ? sizeof(yy_buffer) : yyleng)] = '\0';
+					sizeof(yy_buffer) - 1 );
+		yylval.sval[sizeof(yy_buffer) - 1] = '\0';
 		BEGIN(SKIP);
 		return STRING;
 		}
