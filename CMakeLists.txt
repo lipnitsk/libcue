@@ -7,7 +7,7 @@ endif()
 SET(PACKAGE libcue)
 SET(PACKAGE_NAME libcue)
 SET(PACKAGE_VERSION 2.4.0)
-SET(PACKAGE_SOVERSION 2)
+SET(PACKAGE_SOVERSION 3)
 
 PROJECT(libcue C CXX)
 
@@ -21,7 +21,6 @@ ADD_DEFINITIONS(-DPACKAGE_STRING="${PACKAGE_STRING}")
 SET (CUE_SOURCES
 	cd.c
 	cdtext.c
-	cdtext_compat.c
 	rem.c
 	time.c)
 
