@@ -161,24 +161,44 @@ static char *test_numbers(void)
 	return NULL;
 }
 
-/* tracks past 99 overwrote track 99 */
-static char *test_too_many_tracks(void)
+/* tracks past 99 were dropped (#22) and overwrote track 99 */
+static char *make_tracks(int n)
 {
-	char *cue = malloc(101 * 64 + 64), *p = cue;
+	char *cue = malloc((size_t)n * 64 + 64), *p = cue;
 	int i;
 
 	p += sprintf(p, "FILE \"a.wav\" WAVE\n");
-	for (i = 1; i <= 101; i++)
-		p += sprintf(p, "TRACK %02d AUDIO\nTITLE \"t%d\"\nINDEX 01 %02d:00:00\n", i, i, i - 1);
+	for (i = 1; i <= n; i++)
+		p += sprintf(p, "TRACK %02d AUDIO\nTITLE \"t%d\"\nINDEX 01 %02d:%02d:00\n",
+			     i, i, (i - 1) / 60, (i - 1) % 60);
+	return cue;
+}
 
+static char *test_many_tracks(void)
+{
+	char *cue = make_tracks(183);
 	Cd *cd = cue_parse_string(cue);
 	free(cue);
-	mu_assert("101 tracks: parse failed", cd != NULL);
-	mu_assert("101 tracks: ntrack", cd_get_ntrack(cd) == 99);
+	mu_assert("183 tracks: parse failed", cd != NULL);
+	mu_assert("183 tracks: ntrack", cd_get_ntrack(cd) == 183);
 	Track *t = cd_get_track(cd, 99);
-	mu_assert("101 tracks: track 99 title",
-		  streq(cdtext_get(PTI_TITLE, track_get_cdtext(t)), "t99"));
-	mu_assert("101 tracks: track 99 start", track_get_start(t) == MSF_TO_F(98, 0, 0));
+	mu_assert("183 tracks: track 99 title", streq(cdtext_get(PTI_TITLE, track_get_cdtext(t)), "t99"));
+	mu_assert("183 tracks: track 99 length", track_get_length(t) == MSF_TO_F(0, 1, 0));
+	t = cd_get_track(cd, 183);
+	mu_assert("183 tracks: track 183 title", streq(cdtext_get(PTI_TITLE, track_get_cdtext(t)), "t183"));
+	mu_assert("183 tracks: track 183 start", track_get_start(t) == MSF_TO_F(3, 2, 0));
+	mu_assert("183 tracks: no track 184", cd_get_track(cd, 184) == NULL);
+	cd_delete(cd);
+
+	/* beyond the cap, extra tracks are dropped without touching the last one */
+	cue = make_tracks(10001);
+	cd = cue_parse_string(cue);
+	free(cue);
+	mu_assert("10001 tracks: parse failed", cd != NULL);
+	mu_assert("10001 tracks: ntrack", cd_get_ntrack(cd) == 9999);
+	t = cd_get_track(cd, 9999);
+	mu_assert("10001 tracks: last title", streq(cdtext_get(PTI_TITLE, track_get_cdtext(t)), "t9999"));
+	mu_assert("10001 tracks: last start", track_get_start(t) == MSF_TO_F(166, 38, 0));
 	cd_delete(cd);
 	return NULL;
 }
@@ -349,7 +369,7 @@ static char *run_tests(void)
 	mu_run_test(test_keyword_without_value);
 	mu_run_test(test_nothing_written_to_stdout);
 	mu_run_test(test_numbers);
-	mu_run_test(test_too_many_tracks);
+	mu_run_test(test_many_tracks);
 	mu_run_test(test_file_inside_track);
 	mu_run_test(test_garbage_line);
 	mu_run_test(test_quote_does_not_span_lines);

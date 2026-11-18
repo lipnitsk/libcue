@@ -13,7 +13,12 @@
 #include "cdtext.h"
 #include "rem.h"
 
-#define MAXTRACK	99	/* Red Book track limit (from 01 to 99) */
+/*
+ * Track limit.  Audio CDs (Red Book) are limited to 99 tracks, but cue
+ * sheets are also used to split long single-file recordings, which can
+ * have many more.  The cap only bounds memory use on hostile input.
+ */
+#define MAXTRACK	9999
 #define MAXINDEX	99	/* Red Book index limit (from 00 to 99) */
 #define PARSER_BUFFER   1024    /* Parser buffer size */
 
