@@ -22,6 +22,30 @@ jobs:
         run: |
           cd build
           make test
+  build_and_check_32bit:
+    # long is as wide as int on 32-bit targets, which 64-bit builds cannot
+    # catch (see #90)
+    name: Build and test (32-bit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bison flex gcc-multilib g++-multilib
+      - name: Build
+        run: |
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 \
+            -DCMAKE_EXE_LINKER_FLAGS=-m32 -DCMAKE_SHARED_LINKER_FLAGS=-m32 ../
+          make
+          file regressions | grep -q 'ELF 32-bit'
+      - name: Test
+        run: |
+          cd build
+          ctest --output-on-failure
   test_regressions:
     name: Run ${{ matrix.engine }}-${{ matrix.sanitizer }} fuzzer for regressions
     runs-on: ubuntu-latest
