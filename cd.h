@@ -9,6 +9,8 @@
 #ifndef CD_H
 #define CD_H
 
+#include "cue_namespace.h"
+
 #include "libcue.h"
 #include "cdtext.h"
 #include "rem.h"
