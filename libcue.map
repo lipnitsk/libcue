@@ -1,0 +1,34 @@
+/*
+ * Symbol versions of the shared library, used where the linker supports
+ * version scripts (GNU ld, gold, lld, mold).  New functions added in a
+ * compatible release go in a new node that inherits from the previous one.
+ */
+LIBCUE_3 {
+	global:
+		cd_delete;
+		cd_get_catalog;
+		cd_get_cdtext;
+		cd_get_cdtextfile;
+		cd_get_mode;
+		cd_get_ntrack;
+		cd_get_rem;
+		cd_get_track;
+		cue_cdtext_get;
+		cue_parse_file;
+		cue_parse_string;
+		rem_get;
+		track_get_cdtext;
+		track_get_filename;
+		track_get_index;
+		track_get_isrc;
+		track_get_length;
+		track_get_mode;
+		track_get_rem;
+		track_get_start;
+		track_get_sub_mode;
+		track_get_zero_post;
+		track_get_zero_pre;
+		track_is_set_flag;
+	local:
+		*;
+};
