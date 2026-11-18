@@ -38,7 +38,8 @@ struct Cd {
 	Cdtext *cdtext;			/* CD-TEXT */
 	Rem* rem;
 	int ntrack;			/* number of tracks in album */
-	Track *track[MAXTRACK];		/* array of tracks */
+	int track_alloc;		/* allocated size of track[] */
+	Track **track;			/* array of tracks */
 };
 
 Cd *cd_init(void)
@@ -55,6 +56,8 @@ Cd *cd_init(void)
 		cd->cdtext = cdtext_init();
 		cd->rem = rem_new();
 		cd->ntrack = 0;
+		cd->track_alloc = 0;
+		cd->track = NULL;
 
 		if (NULL == cd->cdtext || NULL == cd->rem) {
 			cd_delete(cd);
@@ -97,6 +100,7 @@ void cd_delete(struct Cd* cd)
 
 		for (i = 0; i < cd->ntrack; i++)
 			track_delete(cd->track[i]);
+		free(cd->track);
 
 		cdtext_delete(cd_get_cdtext(cd));
 
@@ -215,6 +219,19 @@ Track *cd_add_track(Cd *cd)
 	{
 		fprintf(stderr, "too many tracks\n");
 		return cd->track[cd->ntrack - 1];
+	}
+
+	if (cd->ntrack == cd->track_alloc) {
+		int n = cd->track_alloc ? cd->track_alloc * 2 : 16;
+		Track **t;
+
+		if (n > MAXTRACK)
+			n = MAXTRACK;
+		t = realloc(cd->track, n * sizeof(*t));
+		if (NULL == t)
+			return NULL;
+		cd->track = t;
+		cd->track_alloc = n;
 	}
 
 	track = track_init();
