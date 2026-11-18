@@ -36,8 +36,8 @@ void cd_dump(Cd *cd);
  */
 
 void cd_set_mode(Cd *cd, int mode);
-void cd_set_catalog(Cd *cd, char *catalog);
-void cd_set_cdtextfile(Cd *cd, char *cdtextfile);
+void cd_set_catalog(Cd *cd, const char *catalog);
+void cd_set_cdtextfile(Cd *cd, const char *cdtextfile);
 
 /*
  * add a new track to cd, increment number of tracks
@@ -50,7 +50,7 @@ Track *cd_add_track(Cd *cd);
  */
 
 /* filename of data file */
-void track_set_filename(Track *track, char *filename);
+void track_set_filename(Track *track, const char *filename);
 /* track start is starting position in data file */
 void track_set_start(Track *track, long start);
 /* track length is length of data file to use */
@@ -65,7 +65,7 @@ void track_clear_flag(Track *track, int flag);
 
 void track_set_zero_pre(Track *track, long length);
 void track_set_zero_post(Track *track, long length);
-void track_set_isrc(Track *track, char *isrc);
+void track_set_isrc(Track *track, const char *isrc);
 void track_set_index(Track *track, int i, long index);
 
 #endif

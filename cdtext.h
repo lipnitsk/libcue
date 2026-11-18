@@ -28,7 +28,7 @@ void cdtext_delete(Cdtext *cdtext);
 int cdtext_is_empty(Cdtext *cdtext);
 
 /* set CD-TEXT field to value for PTI pti */
-void cdtext_set(int pti, char *value, Cdtext *cdtext);
+void cdtext_set(int pti, const char *value, Cdtext *cdtext);
 
 /*
  * returns appropriate string for PTI pti

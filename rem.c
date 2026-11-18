@@ -92,7 +92,7 @@ rem_is_empty(	Rem* rem)
 
 void
 rem_set(	unsigned int cmt,
-		char* value,
+		const char* value,
 		Rem* rem)
 {
 	if (rem == NULL || value == NULL)
@@ -111,7 +111,7 @@ rem_set(	unsigned int cmt,
 
 const char*
 rem_get(	RemType cmt,
-		Rem* rem)
+		const Rem* rem)
 {
 	if (rem == NULL)
 		return NULL;

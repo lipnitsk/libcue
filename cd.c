@@ -90,10 +90,10 @@ void track_delete(struct Track* track)
 
 void cd_delete(struct Cd* cd)
 {
-	int i = 0;
-
 	if (cd != NULL)
 	{
+		int i;
+
 		free(cd->catalog);
 
 		free(cd->cdtextfile);
@@ -168,7 +168,7 @@ enum DiscMode cd_get_mode(const Cd *cd)
 	return cd->mode;
 }
 
-void cd_set_catalog(Cd *cd, char *catalog)
+void cd_set_catalog(Cd *cd, const char *catalog)
 {
 	free(cd->catalog);
 	cd->catalog = strdup(catalog);
@@ -181,7 +181,7 @@ const char *cd_get_catalog(const Cd *cd)
 	return cd->catalog;
 }
 
-void cd_set_cdtextfile(Cd *cd, char *cdtextfile)
+void cd_set_cdtextfile(Cd *cd, const char *cdtextfile)
 {
 	free(cd->cdtextfile);
 	cd->cdtextfile = strdup(cdtextfile);
@@ -262,7 +262,7 @@ Track *cd_get_track(const Cd *cd, int i)
  * track structure functions
  */
 
-void track_set_filename(Track *track, char *filename)
+void track_set_filename(Track *track, const char *filename)
 {
 	free(track->file.name);
 	track->file.name = strdup(filename);
@@ -363,7 +363,7 @@ long track_get_zero_post(const Track *track)
 		return -1;
 	return track->zero_post.length;
 }
-void track_set_isrc(Track *track, char *isrc)
+void track_set_isrc(Track *track, const char *isrc)
 {
 	free(track->isrc);
 	track->isrc = strdup(isrc);
