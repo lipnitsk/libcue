@@ -321,6 +321,26 @@ static char *test_blank_values(void)
 	return NULL;
 }
 
+/* INDEX times past 99 minutes (long single-file images) were rejected */
+static char *test_long_times(void)
+{
+	Cd *cd = cue_parse_string(
+		"FILE \"long.flac\" WAVE\n"
+		"TRACK 01 AUDIO\nINDEX 01 00:00:00\n"
+		"TRACK 02 AUDIO\nINDEX 01 99:59:74\n"
+		"TRACK 03 AUDIO\nINDEX 01 100:00:00\n"
+		"TRACK 04 AUDIO\nINDEX 01 510:12:34\n"
+		"TRACK 05 AUDIO\nINDEX 01 477218:00:00\n");	/* would overflow an int */
+	mu_assert("long times: parse failed", cd != NULL);
+	mu_assert("long times: track 2", track_get_start(cd_get_track(cd, 2)) == MSF_TO_F(99, 59, 74));
+	mu_assert("long times: track 3", track_get_start(cd_get_track(cd, 3)) == MSF_TO_F(100, 0, 0));
+	mu_assert("long times: track 4", track_get_start(cd_get_track(cd, 4)) == MSF_TO_F(510, 12, 34));
+	mu_assert("long times: track 3 length", track_get_length(cd_get_track(cd, 3)) == MSF_TO_F(510, 12, 34) - MSF_TO_F(100, 0, 0));
+	mu_assert("long times: overflow rejected", track_get_start(cd_get_track(cd, 5)) == -1);
+	cd_delete(cd);
+	return NULL;
+}
+
 static char *run_tests(void)
 {
 	mu_run_test(test_replaygain_overflow);
@@ -337,6 +357,7 @@ static char *run_tests(void)
 	mu_run_test(test_nested_quotes);
 	mu_run_test(test_unquoted_multiword_values);
 	mu_run_test(test_blank_values);
+	mu_run_test(test_long_times);
 	return NULL;
 }
 
