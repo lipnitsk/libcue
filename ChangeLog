@@ -1,3 +1,11 @@
+libcue (3.0.0)
+	[Claude]
+	* Stop exporting the cdtext_get symbol, deprecated since 2.4.1, which
+	  clashes with libcdio (#8).  cdtext_get remains a macro for
+	  cue_cdtext_get(), so source code is unaffected.  SOVERSION is now
+	  3: rebuild programs linked against libcue 2.x
+	* Version the shared library's symbols (LIBCUE_3)
+
 libcue (2.4.1)
 	[Claude]
 	* Set the version number: the 2.4.0 release still identified itself
