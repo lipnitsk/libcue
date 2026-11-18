@@ -49,3 +49,14 @@ flag_dcp="DCP"
 flag_4ch="4CH"
 flag_pre="PRE"
 flag_scms="SCMS"
+
+# REM fields (needed to reach the <RPG> scanner state)
+
+rem_date="REM DATE "
+rem_discid="REM DISCID "
+rem_composer="REM COMPOSER "
+rem_comment="REM COMMENT "
+rem_replaygain_album_gain="REM REPLAYGAIN_ALBUM_GAIN "
+rem_replaygain_album_peak="REM REPLAYGAIN_ALBUM_PEAK "
+rem_replaygain_track_gain="REM REPLAYGAIN_TRACK_GAIN "
+rem_replaygain_track_peak="REM REPLAYGAIN_TRACK_PEAK "
