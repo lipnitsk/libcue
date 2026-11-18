@@ -75,7 +75,7 @@ int cdtext_is_empty(Cdtext *cdtext)
 }
 
 /* sets cdtext's pti entry to field */
-void cdtext_set(int pti, char *value, Cdtext *cdtext)
+void cdtext_set(int pti, const char *value, Cdtext *cdtext)
 {
 	if (NULL != value && NULL != cdtext)	/* don't pass NULL to strdup */
 		for (; PTI_END != cdtext->pti; cdtext++)

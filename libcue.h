@@ -159,7 +159,7 @@ CUE_EXPORT Rem* track_get_rem(const Track* track);
  * return pointer to value for rem comment
  * @param unsigned int: enum of rem comment
  */
-CUE_EXPORT const char *rem_get(enum RemType, Rem*);
+CUE_EXPORT const char *rem_get(enum RemType, const Rem*);
 
 /* Track functions */
 CUE_EXPORT Track *cd_get_track(const Cd *cd, int i);
