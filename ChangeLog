@@ -1,3 +1,13 @@
+libcue (2.4.3)
+	[Peter Lemenkov]
+	* Reject out-of-range numbers on 32-bit targets: the overflow check
+	  did not work where long is as wide as int, so an overlong frame
+	  count was taken as a valid time and the regression tests failed
+	  on i686/armv7hl (PR #90)
+
+	[Claude]
+	* ci: build and test on 32-bit x86 (PR #91)
+
 libcue (2.4.2)
 	[Claude]
 	* Version the shared library's symbols (LIBCUE_2), so that libcue
