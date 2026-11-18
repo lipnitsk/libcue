@@ -32,6 +32,12 @@ jobs:
         engine: [libfuzzer, afl, honggfuzz]
     container:
       image: gcr.io/oss-fuzz-base/base-builder
+      # The sanitizer runtimes may re-exec the fuzzer with ASLR disabled
+      # (personality(ADDR_NO_RANDOMIZE)) when the kernel's mmap randomization
+      # conflicts with their shadow memory layout, which happens randomly on
+      # current runners.  Docker's default seccomp profile blocks that call,
+      # making MSan abort at startup about half the time.
+      options: --security-opt seccomp=unconfined
     steps:
       - uses: actions/checkout@v4
       - name: Install prerequisites
