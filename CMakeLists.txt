@@ -82,6 +82,9 @@ TARGET_LINK_LIBRARIES(issue10 cue)
 ADD_EXECUTABLE(99_tracks ${CMAKE_SOURCE_DIR}/t/99_tracks.c)
 TARGET_LINK_LIBRARIES(99_tracks cue)
 
+ADD_EXECUTABLE(regressions ${CMAKE_SOURCE_DIR}/t/regressions.c)
+TARGET_LINK_LIBRARIES(regressions cue)
+
 if(BUILD_FUZZER)
 	ADD_EXECUTABLE(fuzz ${CMAKE_SOURCE_DIR}/oss-fuzz/fuzz.cpp)
 	TARGET_LINK_LIBRARIES(fuzz cue $ENV{LIB_FUZZING_ENGINE})
@@ -96,6 +99,7 @@ ADD_TEST(multiple_files_test multiple_files)
 ADD_TEST(noncompliant_test noncompliant)
 ADD_TEST(NAME issue10_test COMMAND issue10 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/t)
 ADD_TEST(NAME 99_tracks_test COMMAND 99_tracks WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/t)
+ADD_TEST(regressions_test regressions)
 
 
 SET(CPACK_PACKAGE_VERSION "${PACKAGE_VERSION}")
