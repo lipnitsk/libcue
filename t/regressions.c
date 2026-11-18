@@ -256,6 +256,71 @@ static char *test_null_arguments(void)
 	return NULL;
 }
 
+/* issue #72: quotes inside a quoted title */
+static char *test_nested_quotes(void)
+{
+	Cd *cd = cue_parse_string(HDR
+		"TITLE \"Impromptu op. 66 \"Fantaisie-Impromptu\"\"\n"
+		"PERFORMER \"Rock 'n' Roll\"\n"
+		"INDEX 01 00:00:00\n");
+	mu_assert("#72: parse failed", cd != NULL);
+	Cdtext *ct = track_get_cdtext(cd_get_track(cd, 1));
+	mu_assert("#72: title", streq(cdtext_get(PTI_TITLE, ct), "Impromptu op. 66 \"Fantaisie-Impromptu\""));
+	mu_assert("#72: performer", streq(cdtext_get(PTI_PERFORMER, ct), "Rock 'n' Roll"));
+	cd_delete(cd);
+	return NULL;
+}
+
+/* issue #61 leftover: unquoted values with spaces were a syntax error */
+static char *test_unquoted_multiword_values(void)
+{
+	Cd *cd = cue_parse_string(
+		"REM COMMENT ExactAudioCopy v0.99pb4\n"
+		"REM DATE 1991/07/21\n"
+		"PERFORMER Falcom Sound Team J.D.K.  \r\n"
+		"FILE CDImage.flac WAVE\n"
+		"TRACK 01 AUDIO\n"
+		"TITLE \"Missing closing quote\n"
+		"PERFORMER Guns N' Roses\n"
+		"INDEX 01 00:00:00\n");
+	mu_assert("#61: parse failed", cd != NULL);
+	mu_assert("#61: comment", streq(rem_get(REM_COMMENT, cd_get_rem(cd)), "ExactAudioCopy v0.99pb4"));
+	mu_assert("#61: date", streq(rem_get(REM_DATE, cd_get_rem(cd)), "1991/07/21"));
+	mu_assert("#61: performer", streq(cdtext_get(PTI_PERFORMER, cd_get_cdtext(cd)), "Falcom Sound Team J.D.K."));
+	Track *t = cd_get_track(cd, 1);
+	mu_assert("#61: unquoted file name", streq(track_get_filename(t), "CDImage.flac"));
+	mu_assert("#61: unterminated quote", streq(cdtext_get(PTI_TITLE, track_get_cdtext(t)), "Missing closing quote"));
+	mu_assert("#61: apostrophe", streq(cdtext_get(PTI_PERFORMER, track_get_cdtext(t)), "Guns N' Roses"));
+	cd_delete(cd);
+	return NULL;
+}
+
+/* issue #75: blank values corrupted track start/length */
+static char *test_blank_values(void)
+{
+	static const char *blank[] = { "PERFORMER\n", "REM GENRE          \n", "TITLE \t\n" };
+	unsigned i;
+
+	for (i = 0; i < sizeof(blank) / sizeof(blank[0]); i++) {
+		char cue[512];
+		snprintf(cue, sizeof(cue),
+			 "FILE \"a.flac\" WAVE\n"
+			 "TRACK 01 AUDIO\nINDEX 01 00:00:00\n"
+			 "TRACK 02 AUDIO\n%sINDEX 01 08:57:39\n"
+			 "TRACK 03 AUDIO\nINDEX 01 18:37:44\n%s"
+			 "TRACK 04 AUDIO\nINDEX 01 26:58:52\n", blank[i], blank[i]);
+		Cd *cd = cue_parse_string(cue);
+		mu_assert("#75: parse failed", cd != NULL);
+		mu_assert("#75: ntrack", cd_get_ntrack(cd) == 4);
+		mu_assert("#75: track 2 start", track_get_start(cd_get_track(cd, 2)) == MSF_TO_F(8, 57, 39));
+		mu_assert("#75: track 2 length", track_get_length(cd_get_track(cd, 2)) == MSF_TO_F(18, 37, 44) - MSF_TO_F(8, 57, 39));
+		mu_assert("#75: track 3 length", track_get_length(cd_get_track(cd, 3)) == MSF_TO_F(26, 58, 52) - MSF_TO_F(18, 37, 44));
+		mu_assert("#75: track 4 start", track_get_start(cd_get_track(cd, 4)) == MSF_TO_F(26, 58, 52));
+		cd_delete(cd);
+	}
+	return NULL;
+}
+
 static char *run_tests(void)
 {
 	mu_run_test(test_replaygain_overflow);
@@ -269,6 +334,9 @@ static char *run_tests(void)
 	mu_run_test(test_garbage_line);
 	mu_run_test(test_quote_does_not_span_lines);
 	mu_run_test(test_null_arguments);
+	mu_run_test(test_nested_quotes);
+	mu_run_test(test_unquoted_multiword_values);
+	mu_run_test(test_blank_values);
 	return NULL;
 }
 
