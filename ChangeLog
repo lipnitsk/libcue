@@ -7,6 +7,9 @@ libcue (unreleased)
 	* Never write to stdout from the scanner
 	* Fix a line of unknown characters making the whole parse fail
 	* Fix unbalanced quotes swallowing the following lines
+	* Keep quotes inside quoted values (#72)
+	* Accept unquoted text values containing spaces (#61)
+	* Fix blank values corrupting track start/length (#75)
 	* Fix integer overflow/truncation in numbers and INDEX numbers
 	* Ignore INDEX lines with invalid times instead of storing -1
 	* Fix tracks past 99 overwriting track 99

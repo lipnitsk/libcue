@@ -57,6 +57,7 @@ remsep		[ \t\r\"\']
 %option nodefault
 
 %s NAME
+%s TEXT
 %x REM
 %x REMSKIP
 %x RPG
@@ -64,8 +65,14 @@ remsep		[ \t\r\"\']
 
 %%
 
-\'([^\'\n]|\\\')*\'	|
-\"([^\"\n]|\\\")*\"	{
+
+ /*
+  * A quoted value ends at the last matching quote on its line, so quotes
+  * inside it are kept (TITLE "Op. 66 "Fantaisie-Impromptu"").  It never
+  * extends past the end of the line.
+  */
+\'[^\n]*\'	|
+\"[^\n]*\"	{
 		yylval->sval = set_string(yyextra, yytext + 1, yyleng - 2);
 		BEGIN(INITIAL);
 		return STRING;
@@ -73,6 +80,20 @@ remsep		[ \t\r\"\']
 
 <NAME>{nonws}+	{
 		yylval->sval = set_string(yyextra, yytext, yyleng);
+		BEGIN(INITIAL);
+		return STRING;
+		}
+
+ /*
+  * Unquoted text value: the rest of the line, without trailing blanks.
+  * An opening quote whose closing quote is missing is dropped.
+  */
+<TEXT>{nonws}([^\n]*{nonws})?	{
+		if ((yytext[0] == '"' || yytext[0] == '\'')
+		    && NULL == memchr(yytext + 1, yytext[0], yyleng - 1))
+			yylval->sval = set_string(yyextra, yytext + 1, yyleng - 1);
+		else
+			yylval->sval = set_string(yyextra, yytext, yyleng);
 		BEGIN(INITIAL);
 		return STRING;
 		}
@@ -108,19 +129,19 @@ PREGAP		{ return PREGAP; }
 INDEX		{ return INDEX; }
 POSTGAP		{ return POSTGAP; }
 
-TITLE		{ BEGIN(NAME); yylval->ival = PTI_TITLE;  return TITLE; }
-PERFORMER	{ BEGIN(NAME); yylval->ival = PTI_PERFORMER;  return PERFORMER; }
-SONGWRITER	{ BEGIN(NAME); yylval->ival = PTI_SONGWRITER;  return SONGWRITER; }
-COMPOSER	{ BEGIN(NAME); yylval->ival = PTI_COMPOSER;  return COMPOSER; }
-ARRANGER	{ BEGIN(NAME); yylval->ival = PTI_ARRANGER;  return ARRANGER; }
-MESSAGE		{ BEGIN(NAME); yylval->ival = PTI_MESSAGE;  return MESSAGE; }
-DISC_ID		{ BEGIN(NAME); yylval->ival = PTI_DISC_ID;  return DISC_ID; }
-GENRE		{ BEGIN(NAME); yylval->ival = PTI_GENRE;  return GENRE; }
-TOC_INFO1	{ BEGIN(NAME); yylval->ival = PTI_TOC_INFO1;  return TOC_INFO1; }
-TOC_INFO2	{ BEGIN(NAME); yylval->ival = PTI_TOC_INFO2;  return TOC_INFO2; }
-UPC_EAN		{ BEGIN(NAME); yylval->ival = PTI_UPC_ISRC;  return UPC_EAN; }
-ISRC/{ws}+\"	{ BEGIN(NAME); yylval->ival = PTI_UPC_ISRC;  return ISRC; }
-SIZE_INFO	{ BEGIN(NAME); yylval->ival = PTI_SIZE_INFO;  return SIZE_INFO; }
+TITLE		{ BEGIN(TEXT); yylval->ival = PTI_TITLE;  return TITLE; }
+PERFORMER	{ BEGIN(TEXT); yylval->ival = PTI_PERFORMER;  return PERFORMER; }
+SONGWRITER	{ BEGIN(TEXT); yylval->ival = PTI_SONGWRITER;  return SONGWRITER; }
+COMPOSER	{ BEGIN(TEXT); yylval->ival = PTI_COMPOSER;  return COMPOSER; }
+ARRANGER	{ BEGIN(TEXT); yylval->ival = PTI_ARRANGER;  return ARRANGER; }
+MESSAGE		{ BEGIN(TEXT); yylval->ival = PTI_MESSAGE;  return MESSAGE; }
+DISC_ID		{ BEGIN(TEXT); yylval->ival = PTI_DISC_ID;  return DISC_ID; }
+GENRE		{ BEGIN(TEXT); yylval->ival = PTI_GENRE;  return GENRE; }
+TOC_INFO1	{ BEGIN(TEXT); yylval->ival = PTI_TOC_INFO1;  return TOC_INFO1; }
+TOC_INFO2	{ BEGIN(TEXT); yylval->ival = PTI_TOC_INFO2;  return TOC_INFO2; }
+UPC_EAN		{ BEGIN(TEXT); yylval->ival = PTI_UPC_ISRC;  return UPC_EAN; }
+ISRC/{ws}+\"	{ BEGIN(TEXT); yylval->ival = PTI_UPC_ISRC;  return ISRC; }
+SIZE_INFO	{ BEGIN(TEXT); yylval->ival = PTI_SIZE_INFO;  return SIZE_INFO; }
 
 ISRC		{ BEGIN(NAME); return TRACK_ISRC; }
 
@@ -132,10 +153,10 @@ REM		{ BEGIN(REM); /* exclusive rules for special exceptions */ }
   * so that e.g. "REM ORIGINALDATE", "REM MUSICBRAINZ_DISCID" or a comment
   * that merely mentions a genre do not clobber the real fields.
   */
-<REM>DATE/{remsep}			{ BEGIN(NAME); yylval->ival = REM_DATE; return DATE; }
-<REM>GENRE/{remsep}			{ BEGIN(NAME); yylval->ival = PTI_GENRE; return XXX_GENRE; }
-<REM>DISCID/{remsep}			{ BEGIN(NAME); yylval->ival = PTI_DISC_ID; return XXX_DISCID; }
-<REM>COMPOSER/{remsep}			{ BEGIN(NAME); yylval->ival = PTI_COMPOSER; return XXX_COMPOSER; }
+<REM>DATE/{remsep}			{ BEGIN(TEXT); yylval->ival = REM_DATE; return DATE; }
+<REM>GENRE/{remsep}			{ BEGIN(TEXT); yylval->ival = PTI_GENRE; return XXX_GENRE; }
+<REM>DISCID/{remsep}			{ BEGIN(TEXT); yylval->ival = PTI_DISC_ID; return XXX_DISCID; }
+<REM>COMPOSER/{remsep}			{ BEGIN(TEXT); yylval->ival = PTI_COMPOSER; return XXX_COMPOSER; }
 <REM>REPLAYGAIN_ALBUM_GAIN/{remsep} 	{ BEGIN(RPG); yylval->ival = REM_REPLAYGAIN_ALBUM_GAIN;
 							return REPLAYGAIN_ALBUM_GAIN; }
 <REM>REPLAYGAIN_ALBUM_PEAK/{remsep}	{ BEGIN(RPG); yylval->ival = REM_REPLAYGAIN_ALBUM_PEAK;
@@ -144,9 +165,9 @@ REM		{ BEGIN(REM); /* exclusive rules for special exceptions */ }
 							return REPLAYGAIN_TRACK_GAIN; }
 <REM>REPLAYGAIN_TRACK_PEAK/{remsep}	{ BEGIN(RPG); yylval->ival = REM_REPLAYGAIN_TRACK_PEAK;
 							return REPLAYGAIN_TRACK_PEAK; }
-<REM>COMMENT/{remsep}			{ BEGIN(NAME); yylval->ival = REM_COMMENT; return COMMENT; }
-<REM>DISCNUMBER/{remsep}		{ BEGIN(NAME); yylval->ival = REM_DISCNUMBER; return DISCNUMBER; }
-<REM>TOTALDISCS/{remsep}		{ BEGIN(NAME); yylval->ival = REM_TOTALDISCS; return TOTALDISCS; }
+<REM>COMMENT/{remsep}			{ BEGIN(TEXT); yylval->ival = REM_COMMENT; return COMMENT; }
+<REM>DISCNUMBER/{remsep}		{ BEGIN(TEXT); yylval->ival = REM_DISCNUMBER; return DISCNUMBER; }
+<REM>TOTALDISCS/{remsep}		{ BEGIN(TEXT); yylval->ival = REM_TOTALDISCS; return TOTALDISCS; }
 
 <REM>{ws}+		{ /* skip whitespace before the keyword */ }
 <REM>[^ \t\r\n\"\']+	|
