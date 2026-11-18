@@ -5,52 +5,29 @@
  * For license terms, see the file COPYING in this distribution.
  */
 
+#include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "cd.h"
 #include "cue_time.h"
+#include "cue_parser_state.h"
 
-#ifdef YY_BUF_SIZE
-#undef YY_BUF_SIZE
-#endif
-#define YY_BUF_SIZE 16384
+/* keep the generated symbols out of the global yy* namespace */
+#define yyparse cue_yyparse
+#define yylex cue_yylex
 
-#define YYDEBUG 1
-
-char fnamebuf[PARSER_BUFFER];
-
-/* debugging */
-//int yydebug = 1;
-
-extern int yylineno;
-extern FILE* yyin;
-
-static Cd *cd = NULL;
-static Track *track = NULL;
-static Track *prev_track = NULL;
-static Cdtext *cdtext = NULL;
-static Rem *rem = NULL;
-static char *prev_filename = NULL;	/* last file in or before last track */
-static char *cur_filename = NULL;	/* last file in the last track */
-static char *new_filename = NULL;	/* last file in this track */
-
-/* lexer interface */
-typedef struct yy_buffer_state* YY_BUFFER_STATE;
-
-int yylex(void);
-void yyerror(const char*);
-YY_BUFFER_STATE yy_scan_string(const char*);
-YY_BUFFER_STATE yy_create_buffer(FILE*, int);
-void yy_switch_to_buffer(YY_BUFFER_STATE);
-void yy_delete_buffer(YY_BUFFER_STATE);
-
-/* parser interface */
-int yyparse(void);
-Cd *cue_parse_file(FILE *fp);
-Cd *cue_parse_string(const char*);
+static void yyerror(void *scanner, struct cue_parser_state *st, const char *s);
+static long msf_to_frame(long m, long s, long f);
+static void copy_filename(char *dst, const char *src);
+static void use_new_file_for_track(struct cue_parser_state *st);
 %}
+
+%define api.pure
+%parse-param {void *scanner}
+%parse-param {struct cue_parser_state *st}
+%lex-param {void *scanner}
 
 %start cuefile
 
@@ -58,6 +35,10 @@ Cd *cue_parse_string(const char*);
 	long ival;
 	char *sval;
 }
+
+%{
+int cue_yylex(YYSTYPE *yylval_param, void *yyscanner);
+%}
 
 %token <ival> NUMBER
 %token <sval> STRING
@@ -135,14 +116,21 @@ Cd *cue_parse_string(const char*);
 %%
 
 cuefile
-	: new_cd global_statements track_list end_cd
+	: new_cd global_statements track_list {
+		/* FILE inside the last track, never followed by an INDEX */
+		if (st->file_in_track && NULL != st->new_filename
+		    && st->track != st->overflow)
+			use_new_file_for_track(st);
+	}
 	;
 
 new_cd
 	: /* empty */ {
-		cd = cd_init();
-		cdtext = cd_get_cdtext(cd);
-		rem = cd_get_rem(cd);
+		st->cd = cd_init();
+		if (NULL == st->cd)
+			YYABORT;
+		st->cdtext = cd_get_cdtext(st->cd);
+		st->rem = cd_get_rem(st->cd);
 	}
 	;
 
@@ -152,25 +140,30 @@ global_statements
 	;
 
 global_statement
-	: CATALOG STRING '\n' { cd_set_catalog(cd, $2); }
-	| CDTEXTFILE STRING '\n' { cd_set_cdtextfile(cd, $2); }
+	: CATALOG STRING '\n' { cd_set_catalog(st->cd, $2); }
+	| CDTEXTFILE STRING '\n' { cd_set_cdtextfile(st->cd, $2); }
 	| cdtext
 	| rem
 	| track_data
+	| '\n'		/* empty statement, e.g. a line of unknown characters */
 	| error '\n'
 	;
 
 track_data
 	: FFILE STRING file_format '\n' {
-		if (NULL != new_filename) {
-			yyerror("too many files specified\n");
+		if (NULL != st->new_filename) {
+			yyerror(scanner, st, "too many files specified");
 		}
-		if (track && track_get_index(track, 1) == -1) {
-			track_set_filename (track, $2);
-		} else {
-			new_filename = strncpy(fnamebuf, $2, sizeof(fnamebuf));
-			new_filename[sizeof(fnamebuf) - 1] = '\0';
-		}
+		copy_filename(st->new_fname, $2);
+		st->new_filename = st->new_fname;
+		/*
+		 * A FILE inside a track that has no INDEX 01 yet is ambiguous:
+		 * if an INDEX follows, the track continues in the new file
+		 * (e.g. INDEX 00 in the old file, INDEX 01 in the new one);
+		 * if TRACK follows, the file is for the next track.
+		 */
+		st->file_in_track = (NULL != st->track
+				     && track_get_index(st->track, 1) == -1);
 	}
 	;
 
@@ -195,30 +188,47 @@ file_format
 new_track
 	: /*empty */ {
 		/* save previous track, to later set length */
-		prev_track = track;
+		st->prev_track = st->track;
 
-		track = cd_add_track(cd);
-		if (prev_track == track)
-			prev_track = NULL;
-		cdtext = track_get_cdtext(track);
-		rem = track_get_rem(track);
+		if (cd_get_ntrack(st->cd) >= MAXTRACK) {
+			/*
+			 * Parse surplus tracks into a scratch track that is
+			 * thrown away, so they cannot clobber the last real one.
+			 */
+			yyerror(scanner, st, "too many tracks");
+			if (NULL != st->overflow) {
+				st->prev_track = NULL;
+				track_delete(st->overflow);
+			}
+			st->track = st->overflow = track_init();
+		} else {
+			st->track = cd_add_track(st->cd);
+		}
+		if (NULL == st->track)
+			YYABORT;
 
-		cur_filename = new_filename;
-		if (NULL != cur_filename)
-			prev_filename = cur_filename;
+		st->cdtext = track_get_cdtext(st->track);
+		st->rem = track_get_rem(st->track);
 
-		if (NULL == prev_filename)
-			yyerror("no file specified for track");
+		st->cur_filename = NULL;
+		st->file_in_track = 0;
+		if (NULL != st->new_filename) {
+			copy_filename(st->cur_fname, st->new_filename);
+			st->cur_filename = st->prev_filename = st->cur_fname;
+		}
+
+		if (NULL == st->prev_filename)
+			yyerror(scanner, st, "no file specified for track");
 		else
-			track_set_filename(track, prev_filename);
+			track_set_filename(st->track, st->prev_filename);
 
-		new_filename = NULL;
+		st->new_filename = NULL;
 	}
 	;
 
 track_def
 	: TRACK NUMBER track_mode '\n' {
-		track_set_mode(track, $3);
+		track_set_mode(st->track, $3);
 	}
 	;
 
@@ -242,39 +252,48 @@ track_statement
 	: cdtext
 	| rem
 	| FLAGS track_flags '\n'
-	| TRACK_ISRC STRING '\n' { track_set_isrc(track, $2); }
-	| PREGAP time '\n' { track_set_zero_pre(track, $2); }
+	| TRACK_ISRC STRING '\n' { track_set_isrc(st->track, $2); }
+	| PREGAP time '\n' { track_set_zero_pre(st->track, $2); }
 	| INDEX NUMBER time '\n' {
-		long prev_length;
+		if ($2 < 0 || $2 > MAXINDEX) {
+			yyerror(scanner, st, "invalid index number");
+		} else if ($3 < 0) {
+			yyerror(scanner, st, "invalid index time");
+		} else {
+			if (st->file_in_track && NULL != st->new_filename)
+				use_new_file_for_track(st);
 
-		/* Set previous track length if it has not been set */
-		if (NULL != prev_track && NULL == cur_filename
-		    && track_get_length (prev_track) == -1) {
-			/* track shares file with previous track */
-			prev_length = $3 - track_get_start(prev_track);
-			track_set_length(prev_track, prev_length);
+			/* Set previous track length if it has not been set */
+			if (NULL != st->prev_track && NULL == st->cur_filename
+			    && track_get_length(st->prev_track) == -1
+			    && track_get_start(st->prev_track) != -1) {
+				/* track shares file with previous track */
+				track_set_length(st->prev_track,
+					$3 - track_get_start(st->prev_track));
+			}
+
+			if (1 == $2) {
+				/* INDEX 01 */
+				track_set_start(st->track, $3);
+
+				long idx00 = track_get_index(st->track, 0);
+
+				if (idx00 != -1 && $3 != 0)
+					track_set_zero_pre(st->track, $3 - idx00);
+			}
+
+			track_set_index(st->track, (int)$2, $3);
 		}
-
-		if (1 == $2) {
-			/* INDEX 01 */
-			track_set_start(track, $3);
-
-			long idx00 = track_get_index (track, 0);
-
-			if (idx00 != -1 && $3 != 0)
-				track_set_zero_pre (track, $3 - idx00);
-		}
-
-		track_set_index (track, $2, $3);
 	}
-	| POSTGAP time '\n' { track_set_zero_post(track, $2); }
+	| POSTGAP time '\n' { track_set_zero_post(st->track, $2); }
 	| track_data
+	| '\n'		/* empty statement, also absorbs the newline added at EOF */
 	| error '\n'
 	;
 
 track_flags
 	: /* empty */
-	| track_flags track_flag { track_set_flag(track, $2); }
+	| track_flags track_flag { track_set_flag(st->track, $2); }
 	;
 
 track_flag
@@ -285,7 +304,7 @@ track_flag
 	;
 
 cdtext
-	: cdtext_item STRING '\n' { cdtext_set ($1, $2, cdtext); }
+	: cdtext_item STRING '\n' { cdtext_set($1, $2, st->cdtext); }
 	;
 
 cdtext_item
@@ -305,15 +324,15 @@ cdtext_item
 	;
 
 time
-	: NUMBER
-	| NUMBER ':' NUMBER ':' NUMBER { $$ = time_msf_to_frame($1, $3, $5); }
+	: NUMBER { $$ = ($1 > INT_MAX) ? -1 : $1; }
+	| NUMBER ':' NUMBER ':' NUMBER { $$ = msf_to_frame($1, $3, $5); }
 	;
 
 rem
-	: rem_item STRING '\n' { rem_set($1, $2, rem); }
-	| XXX_GENRE STRING '\n' { cdtext_set($1, $2, cdtext); }
-	| XXX_DISCID STRING '\n' { cdtext_set($1, $2, cdtext); }
-	| XXX_COMPOSER STRING '\n' { cdtext_set($1, $2, cdtext); }
+	: rem_item STRING '\n' { rem_set($1, $2, st->rem); }
+	| XXX_GENRE STRING '\n' { cdtext_set($1, $2, st->cdtext); }
+	| XXX_DISCID STRING '\n' { cdtext_set($1, $2, st->cdtext); }
+	| XXX_COMPOSER STRING '\n' { cdtext_set($1, $2, st->cdtext); }
 	;
 
 rem_item
@@ -326,76 +345,96 @@ rem_item
 	| DISCNUMBER
 	| TOTALDISCS
 	;
-
-end_cd
-	: /* empty */
-	| '\n' end_cd
-	;
 %%
 
 /* lexer interface */
+int cue_yylex_init_extra(struct cue_parser_state *extra, void **scanner);
+int cue_yylex_destroy(void *scanner);
+struct yy_buffer_state *cue_yy_create_buffer(FILE *file, int size, void *scanner);
+void cue_yy_switch_to_buffer(struct yy_buffer_state *buffer, void *scanner);
+void cue_yyset_lineno(int line, void *scanner);
+int cue_yyget_lineno(void *scanner);
+struct yy_buffer_state *cue_yy_scan_string(const char *str, void *scanner);
 
-void yyerror (const char *s)
+static void yyerror(void *scanner, struct cue_parser_state *st, const char *s)
 {
-	fprintf(stderr, "%d: %s\n", yylineno, s);
+	(void)st;
+	fprintf(stderr, "%d: %s\n", cue_yyget_lineno(scanner), s);
 }
 
-static void reset_static_vars()
+/* MSF to frames; -1 for anything that is not a valid MSF time */
+static long msf_to_frame(long m, long s, long f)
 {
-	cd = NULL;
-	track = NULL;
-	prev_track = NULL;
-	cdtext = NULL;
-	rem = NULL;
-	prev_filename = NULL;
-	cur_filename = NULL;
-	new_filename = NULL;
+	if (m < 0 || m > INT_MAX || s < 0 || s > INT_MAX || f < 0 || f > INT_MAX)
+		return -1;
+	return time_msf_to_frame((int)m, (int)s, (int)f);
+}
+
+static void copy_filename(char *dst, const char *src)
+{
+	strncpy(dst, src, PARSER_BUFFER - 1);
+	dst[PARSER_BUFFER - 1] = '\0';
+}
+
+/* the pending FILE belongs to the current track, and the tracks after it */
+static void use_new_file_for_track(struct cue_parser_state *st)
+{
+	track_set_filename(st->track, st->new_filename);
+	copy_filename(st->cur_fname, st->new_filename);
+	st->cur_filename = st->prev_filename = st->cur_fname;
+	st->new_filename = NULL;
+	st->file_in_track = 0;
+}
+
+/* parse either fp or string, using fresh state for every call */
+static Cd *cue_parse(FILE *fp, const char *string)
+{
+	struct cue_parser_state *st;
+	void *scanner = NULL;
+	Cd *ret_cd = NULL;
+
+	st = calloc(1, sizeof(*st));
+	if (NULL == st)
+		return NULL;
+
+	if (0 != cue_yylex_init_extra(st, &scanner)) {
+		free(st);
+		return NULL;
+	}
+
+	/* the buffer is owned and freed by the scanner (cue_yylex_destroy) */
+	if (NULL != fp)
+		cue_yy_switch_to_buffer(cue_yy_create_buffer(fp, 16384, scanner), scanner);
+	else
+		cue_yy_scan_string(string, scanner);
+
+	/* not initialized by flex for string buffers */
+	cue_yyset_lineno(1, scanner);
+
+	if (0 == cue_yyparse(scanner, st))
+		ret_cd = st->cd;
+	else
+		cd_delete(st->cd);
+
+	cue_yylex_destroy(scanner);
+	track_delete(st->overflow);
+	free(st);
+
+	return ret_cd;
 }
 
 Cd *cue_parse_file(FILE *fp)
 {
-	YY_BUFFER_STATE buffer = NULL;
+	if (NULL == fp)
+		return NULL;
 
-	yyin = fp;
-
-	buffer = yy_create_buffer(yyin, YY_BUF_SIZE);
-
-	yy_switch_to_buffer(buffer);
-
-	Cd *ret_cd = NULL;
-
-	yylineno = 1;
-	if (0 == yyparse()) ret_cd = cd;
-	else
-	{
-		ret_cd = NULL;
-		cd_delete(cd);
-	}
-
-	yy_delete_buffer(buffer);
-	reset_static_vars();
-
-	return ret_cd;
+	return cue_parse(fp, NULL);
 }
 
 Cd *cue_parse_string(const char* string)
 {
-	YY_BUFFER_STATE buffer = NULL;
+	if (NULL == string)
+		return NULL;
 
-	buffer = yy_scan_string(string);
-
-	Cd *ret_cd = NULL;
-
-	yylineno = 1;
-	if (0 == yyparse()) ret_cd = cd;
-	else
-	{
-		ret_cd = NULL;
-		cd_delete(cd);
-	}
-
-	yy_delete_buffer(buffer);
-	reset_static_vars();
-
-	return ret_cd;
+	return cue_parse(NULL, string);
 }
