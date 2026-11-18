@@ -24,15 +24,20 @@ static char *set_string(struct cue_parser_state *st, const char *s, size_t len)
 	return st->string;
 }
 
-/* Convert a run of decimal digits, saturating at LONG_MAX instead of overflowing. */
+/*
+ * Convert a run of decimal digits.  Every number in a cue sheet must fit
+ * an int, so anything larger is returned as -1, which the parser rejects.
+ * (Saturating at LONG_MAX does not work where long is as wide as int:
+ * LONG_MAX == INT_MAX there, and the value would be taken as valid.)
+ */
 static long parse_number(const char *s)
 {
 	long v = 0;
 
 	for (; *s >= '0' && *s <= '9'; s++) {
 		int d = *s - '0';
-		if (v > (LONG_MAX - d) / 10)
-			return LONG_MAX;
+		if (v > (INT_MAX - d) / 10)
+			return -1;
 		v = v * 10 + d;
 	}
 	return v;
