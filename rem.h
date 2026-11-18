@@ -52,7 +52,7 @@ rem_is_empty(	Rem*);
  */
 void
 rem_set(	unsigned int,
-		char*,
+		const char*,
 		Rem*);
 
 /**
