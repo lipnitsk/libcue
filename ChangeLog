@@ -1,10 +1,5 @@
-libcue (unreleased)
-	[Sid, luludawang187]
-	* Fix out-of-bounds write in the REPLAYGAIN scanner rule (PR #77,
-	  PR #80; also reported by HaiND in #79)
-	* Add a REPLAYGAIN regression input and REM fuzzing dictionary
-	  entries (PR #80)
-
+libcue (2.4.0)
+	[Claude]
 	* Make the parser reentrant and thread-safe; no state is shared
 	  between parses
 	* Fix REM keywords being matched anywhere in a REM line
@@ -18,17 +13,23 @@ libcue (unreleased)
 	  FelipeLema)
 	* Fix integer overflow/truncation in numbers and INDEX numbers
 	* Ignore INDEX lines with invalid times instead of storing -1
-	* Fix tracks past 99 overwriting track 99
-	* Fix file assignment for FILE inside a track (issue 10 layout)
-	* Make public getters NULL-safe; cue_parse_*(NULL) returns NULL
-	* Handle allocation failures in cd_init()/track_init()
-	* Add regression tests
 	* Accept INDEX times past 99 minutes again (regression in 2.3.0)
 	* Lift the 99-track limit (#22)
+	* Fix file assignment for FILE inside a track (issue 10 layout)
 	* Add cue_cdtext_get(); cdtext_get is now a macro for it, and the
 	  cdtext_get symbol is deprecated (libcdio clash, #8)
 	* Prefix internal functions with cue_ to avoid clashes when linked
 	  statically (#8, #23)
+	* Make public getters NULL-safe; cue_parse_*(NULL) returns NULL
+	* Handle allocation failures in cd_init()/track_init()
+	* Require bison >= 2.4 and flex >= 2.5.35
+	* Add regression tests
+
+	[Sid, luludawang187]
+	* Fix out-of-bounds write in the REPLAYGAIN scanner rule (PR #77,
+	  PR #80; also reported by HaiND in #79)
+	* Add a REPLAYGAIN regression input and REM fuzzing dictionary
+	  entries (PR #80)
 
 	[Greg Kennedy]
 	* rem_get() takes a const Rem * (PR #57)
