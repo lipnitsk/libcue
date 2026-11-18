@@ -1,15 +1,21 @@
 libcue (unreleased)
+	[Sid, luludawang187]
+	* Fix out-of-bounds write in the REPLAYGAIN scanner rule (PR #77,
+	  PR #80; also reported by HaiND in #79)
+	* Add a REPLAYGAIN regression input and REM fuzzing dictionary
+	  entries (PR #80)
+
 	* Make the parser reentrant and thread-safe; no state is shared
 	  between parses
-	* Fix global buffer overflow in the REPLAYGAIN scanner rule
 	* Fix REM keywords being matched anywhere in a REM line
-	* Fix keywords without a value swallowing the next line
+	* Fix keywords without a value swallowing the next line (#75,
+	  reported by ciros88)
 	* Never write to stdout from the scanner
 	* Fix a line of unknown characters making the whole parse fail
 	* Fix unbalanced quotes swallowing the following lines
-	* Keep quotes inside quoted values (#72)
-	* Accept unquoted text values containing spaces (#61)
-	* Fix blank values corrupting track start/length (#75)
+	* Keep quotes inside quoted values (#72, reported by FelipeLema)
+	* Accept unquoted text values containing spaces (#61, reported by
+	  FelipeLema)
 	* Fix integer overflow/truncation in numbers and INDEX numbers
 	* Ignore INDEX lines with invalid times instead of storing -1
 	* Fix tracks past 99 overwriting track 99
