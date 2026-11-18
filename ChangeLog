@@ -1,3 +1,9 @@
+libcue (2.4.2)
+	[Claude]
+	* Version the shared library's symbols (LIBCUE_2), so that libcue
+	  can no longer capture libcdio's cdtext_get calls when both are
+	  loaded in one process (#8).  ABI and soname unchanged
+
 libcue (2.4.1)
 	[Claude]
 	* Set the version number: the 2.4.0 release still identified itself
