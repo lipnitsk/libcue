@@ -86,7 +86,7 @@ void cdtext_set(int pti, char *value, Cdtext *cdtext)
 }
 
 /* returns value for pti, NULL if pti is not found */
-const char *cdtext_get(enum Pti pti, const Cdtext *cdtext)
+const char *cue_cdtext_get(enum Pti pti, const Cdtext *cdtext)
 {
 	if (NULL == cdtext)
 		return NULL;
@@ -165,7 +165,7 @@ void cdtext_dump(Cdtext *cdtext, int istrack)
 	const char *value = NULL;
 
 	for (pti = 0; PTI_END != pti; pti++) {
-		if (NULL != (value = cdtext_get(pti, cdtext))) {
+		if (NULL != (value = cue_cdtext_get(pti, cdtext))) {
 			const char *key = cdtext_get_key(pti, istrack);
 			printf("%s: ", key ? key : "(reserved)");
 			printf("%s\n", value);
