@@ -7,7 +7,8 @@
  * only pulled in by objects that were compiled against an old libcue.h,
  * and cannot clash with libcdio's cdtext_get() otherwise (#8).
  *
- * To be removed in libcue 3.0.
+ * In the shared library it carries a symbol version (see libcue.map), so it
+ * cannot capture libcdio's versioned cdtext_get references at run time.
  *
  * For license terms, see the file COPYING in this distribution.
  */
