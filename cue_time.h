@@ -8,6 +8,8 @@
 #ifndef CUE_TIME_H
 #define CUE_TIME_H
 
+#include "cue_namespace.h"
+
 long time_msf_to_frame(int m, int s, int f);
 void time_frame_to_msf(long frame, int *m, int *s, int *f);
 char *time_frame_to_mmssff(long f);

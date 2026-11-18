@@ -24,6 +24,8 @@
 #ifndef REM_H
 #define REM_H
 
+#include "cue_namespace.h"
+
 #include "libcue.h"
 
 /**

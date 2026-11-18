@@ -9,6 +9,8 @@
 #ifndef CDTEXT_H
 #define CDTEXT_H
 
+#include "cue_namespace.h"
+
 #include "libcue.h"
 
 enum PtiFormat {
