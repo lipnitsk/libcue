@@ -64,6 +64,9 @@ void cdtext_delete(Cdtext *cdtext)
 /* return 0 if there is no cdtext, returns non-zero otherwise */
 int cdtext_is_empty(Cdtext *cdtext)
 {
+	if (NULL == cdtext)
+		return 0;
+
 	for (; PTI_END != cdtext->pti; cdtext++)
 		if (NULL != cdtext->value)
 			return -1;
@@ -74,7 +77,7 @@ int cdtext_is_empty(Cdtext *cdtext)
 /* sets cdtext's pti entry to field */
 void cdtext_set(int pti, char *value, Cdtext *cdtext)
 {
-	if (NULL != value)	/* don't pass NULL to strdup */
+	if (NULL != value && NULL != cdtext)	/* don't pass NULL to strdup */
 		for (; PTI_END != cdtext->pti; cdtext++)
 			if (pti == cdtext->pti) {
 				free (cdtext->value);
@@ -85,6 +88,9 @@ void cdtext_set(int pti, char *value, Cdtext *cdtext)
 /* returns value for pti, NULL if pti is not found */
 const char *cdtext_get(enum Pti pti, const Cdtext *cdtext)
 {
+	if (NULL == cdtext)
+		return NULL;
+
 	for (; PTI_END != cdtext->pti; cdtext++)
 		if (pti == cdtext->pti)
 			return cdtext->value;
@@ -125,7 +131,7 @@ const char *cdtext_get_key(int pti, int istrack)
 		key = "TOC_INFO1";
 		break;
 	case PTI_TOC_INFO2:
-		key = "TOC_INFO1";
+		key = "TOC_INFO2";
 		break;
 	case PTI_RESERVED1:
 		/* reserved */
@@ -160,7 +166,8 @@ void cdtext_dump(Cdtext *cdtext, int istrack)
 
 	for (pti = 0; PTI_END != pti; pti++) {
 		if (NULL != (value = cdtext_get(pti, cdtext))) {
-			printf("%s: ", cdtext_get_key(pti, istrack));
+			const char *key = cdtext_get_key(pti, istrack);
+			printf("%s: ", key ? key : "(reserved)");
 			printf("%s\n", value);
 		}
 	}

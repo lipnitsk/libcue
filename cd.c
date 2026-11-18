@@ -55,6 +55,11 @@ Cd *cd_init(void)
 		cd->cdtext = cdtext_init();
 		cd->rem = rem_new();
 		cd->ntrack = 0;
+
+		if (NULL == cd->cdtext || NULL == cd->rem) {
+			cd_delete(cd);
+			cd = NULL;
+		}
 	}
 
 	return cd;
@@ -131,9 +136,14 @@ Track *track_init(void)
 		track->cdtext = cdtext_init();
 		track->rem = rem_new();
 
-                int i;
-                for (i=0; i<=MAXINDEX; i++)
-                   track->index[i] = -1;
+		int i;
+		for (i = 0; i <= MAXINDEX; i++)
+			track->index[i] = -1;
+
+		if (NULL == track->cdtext || NULL == track->rem) {
+			track_delete(track);
+			track = NULL;
+		}
 	}
 
 	return track;
@@ -149,6 +159,8 @@ void cd_set_mode(Cd *cd, int mode)
 
 enum DiscMode cd_get_mode(const Cd *cd)
 {
+	if (NULL == cd)
+		return MODE_CD_DA;
 	return cd->mode;
 }
 
@@ -160,6 +172,8 @@ void cd_set_catalog(Cd *cd, char *catalog)
 
 const char *cd_get_catalog(const Cd *cd)
 {
+	if (NULL == cd)
+		return NULL;
 	return cd->catalog;
 }
 
@@ -171,6 +185,8 @@ void cd_set_cdtextfile(Cd *cd, char *cdtextfile)
 
 const char *cd_get_cdtextfile(const Cd *cd)
 {
+	if (NULL == cd)
+		return NULL;
 	return cd->cdtextfile;
 }
 
@@ -193,21 +209,27 @@ cd_get_rem(const Cd* cd)
 
 Track *cd_add_track(Cd *cd)
 {
-	if (MAXTRACK > cd->ntrack)
-		cd->ntrack++;
-	else
+	Track *track;
+
+	if (MAXTRACK <= cd->ntrack)
 	{
 		fprintf(stderr, "too many tracks\n");
 		return cd->track[cd->ntrack - 1];
 	}
 
-	cd->track[cd->ntrack - 1] = track_init();
+	track = track_init();
+	if (NULL == track)
+		return NULL;
 
-	return cd->track[cd->ntrack - 1];
+	cd->track[cd->ntrack++] = track;
+
+	return track;
 }
 
 int cd_get_ntrack(const Cd *cd)
 {
+	if (NULL == cd)
+		return 0;
 	return cd->ntrack;
 }
 
@@ -231,6 +253,8 @@ void track_set_filename(Track *track, char *filename)
 
 const char *track_get_filename(const Track *track)
 {
+	if (NULL == track)
+		return NULL;
 	return track->file.name;
 }
 
@@ -241,6 +265,8 @@ void track_set_start(Track *track, long start)
 
 long track_get_start(const Track *track)
 {
+	if (NULL == track)
+		return -1;
 	return track->file.start;
 }
 
@@ -251,6 +277,8 @@ void track_set_length(Track *track, long length)
 
 long track_get_length(const Track *track)
 {
+	if (NULL == track)
+		return -1;
 	return track->file.length;
 }
 
@@ -261,6 +289,8 @@ void track_set_mode(Track *track, int mode)
 
 enum TrackMode track_get_mode(const Track *track)
 {
+	if (NULL == track)
+		return MODE_AUDIO;
 	return track->mode;
 }
 
@@ -271,6 +301,8 @@ void track_set_sub_mode(Track *track, int sub_mode)
 
 enum TrackSubMode track_get_sub_mode(const Track *track)
 {
+	if (NULL == track)
+		return SUB_MODE_RW;
 	return track->sub_mode;
 }
 
@@ -286,6 +318,8 @@ void track_clear_flag(Track *track, int flag)
 
 int track_is_set_flag(const Track *track, enum TrackFlag flag)
 {
+	if (NULL == track)
+		return 0;
 	return track->flags & flag;
 }
 
@@ -296,6 +330,8 @@ void track_set_zero_pre(Track *track, long length)
 
 long track_get_zero_pre(const Track *track)
 {
+	if (NULL == track)
+		return -1;
 	return track->zero_pre.length;
 }
 
@@ -306,6 +342,8 @@ void track_set_zero_post(Track *track, long length)
 
 long track_get_zero_post(const Track *track)
 {
+	if (NULL == track)
+		return -1;
 	return track->zero_post.length;
 }
 void track_set_isrc(Track *track, char *isrc)
@@ -316,6 +354,8 @@ void track_set_isrc(Track *track, char *isrc)
 
 const char *track_get_isrc(const Track *track)
 {
+	if (NULL == track)
+		return NULL;
 	return track->isrc;
 }
 
@@ -340,15 +380,15 @@ void track_set_index(Track *track, int i, long ind)
 {
 	if (i < 0 || i > MAXINDEX) {
 		fprintf(stderr, "too many indexes\n");
-                return;
-        }
+		return;
+	}
 
 	track->index[i] = ind;
 }
 
 long track_get_index(const Track *track, int i)
 {
-	if ((0 <= i) && (i <= MAXINDEX))
+	if ((NULL != track) && (0 <= i) && (i <= MAXINDEX))
 		return track->index[i];
 
 	return -1;
@@ -362,18 +402,18 @@ static void cd_track_dump(Track *track)
 	int i;
 
 	printf("zero_pre: %ld\n", track->zero_pre.length);
-	printf("filename: %s\n", track->file.name);
+	printf("filename: %s\n", track->file.name ? track->file.name : "(null)");
 	printf("start: %ld\n", track->file.start);
 	printf("length: %ld\n", track->file.length);
 	printf("zero_post: %ld\n", track->zero_post.length);
 	printf("mode: %d\n", track->mode);
 	printf("sub_mode: %d\n", track->sub_mode);
 	printf("flags: 0x%x\n", track->flags);
-	printf("isrc: %s\n", track->isrc);
+	printf("isrc: %s\n", track->isrc ? track->isrc : "(null)");
 
 	for (i = 0; i <= MAXINDEX; ++i)
-                if (track->index[i] != -1)
-                        printf("index %d: %ld\n", i, track->index[i]);
+		if (track->index[i] != -1)
+			printf("index %d: %ld\n", i, track->index[i]);
 
 	if (NULL != track->cdtext) {
 		printf("cdtext:\n");
@@ -393,8 +433,8 @@ void cd_dump(Cd *cd)
 
 	printf("Disc Info\n");
 	printf("mode: %d\n", cd->mode);
-	printf("catalog: %s\n", cd->catalog);
-	printf("cdtextfile: %s\n", cd->cdtextfile);
+	printf("catalog: %s\n", cd->catalog ? cd->catalog : "(null)");
+	printf("cdtextfile: %s\n", cd->cdtextfile ? cd->cdtextfile : "(null)");
 	if (NULL != cd->cdtext) {
 		printf("cdtext:\n");
 		cdtext_dump(cd->cdtext, 0);
