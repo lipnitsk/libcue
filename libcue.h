@@ -139,14 +139,11 @@ CUE_EXPORT Cdtext *track_get_cdtext(const Track *track);
 /*
  * Value of a CD-TEXT field, or NULL if it is not set.
  *
- * The function used to be called cdtext_get(), which clashes with libcdio's
- * function of the same name.  cdtext_get is now a macro for cue_cdtext_get,
- * so existing code keeps compiling but no longer refers to the clashing
- * symbol; the old symbol is still exported for existing binaries until
- * libcue 3.0.  Programs that also use libcdio's cdtext_get() define
- * LIBCUE_NO_CDTEXT_GET before including this header and call
- * cue_cdtext_get() for libcue; until libcue 3.0 they must also link
- * libcdio before libcue.
+ * Up to libcue 2.x this function was called cdtext_get(), which clashes with
+ * libcdio's function of the same name.  The cdtext_get symbol is no longer
+ * exported; cdtext_get remains available as a macro so that existing code
+ * still compiles.  Programs that also use libcdio's cdtext_get() define
+ * LIBCUE_NO_CDTEXT_GET before including this header.
  */
 CUE_EXPORT const char *cue_cdtext_get(enum Pti pti, const Cdtext *cdtext);
 #ifndef LIBCUE_NO_CDTEXT_GET
