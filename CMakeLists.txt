@@ -21,6 +21,7 @@ ADD_DEFINITIONS(-DPACKAGE_STRING="${PACKAGE_STRING}")
 SET (CUE_SOURCES
 	cd.c
 	cdtext.c
+	cdtext_compat.c
 	rem.c
 	time.c)
 

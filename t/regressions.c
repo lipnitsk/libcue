@@ -361,6 +361,18 @@ static char *test_long_times(void)
 	return NULL;
 }
 
+/* #8: cdtext_get is an alias of cue_cdtext_get (libcdio clash) */
+static char *test_cue_cdtext_get(void)
+{
+	Cd *cd = cue_parse_string("TITLE \"x\"\n" HDR "INDEX 01 00:00:00\n");
+	mu_assert("#8: parse failed", cd != NULL);
+	mu_assert("#8: cue_cdtext_get", streq(cue_cdtext_get(PTI_TITLE, cd_get_cdtext(cd)), "x"));
+	mu_assert("#8: cdtext_get", streq(cdtext_get(PTI_TITLE, cd_get_cdtext(cd)), "x"));
+	mu_assert("#8: NULL", cue_cdtext_get(PTI_TITLE, NULL) == NULL);
+	cd_delete(cd);
+	return NULL;
+}
+
 static char *run_tests(void)
 {
 	mu_run_test(test_replaygain_overflow);
@@ -378,6 +390,7 @@ static char *run_tests(void)
 	mu_run_test(test_unquoted_multiword_values);
 	mu_run_test(test_blank_values);
 	mu_run_test(test_long_times);
+	mu_run_test(test_cue_cdtext_get);
 	return NULL;
 }
 
