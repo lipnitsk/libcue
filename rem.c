@@ -138,6 +138,6 @@ rem_dump(	Rem* rem)
 
 	do
 	{
-		printf("REM %u: %s\n", rem->cmt, rem->value);
+		printf("REM %u: %s\n", rem->cmt, rem->value ? rem->value : "(null)");
 	} while ((++rem)->cmt != REM_END);
 }
