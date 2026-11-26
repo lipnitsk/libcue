@@ -263,10 +263,15 @@ track_statement
 			if (st->file_in_track && NULL != st->new_filename)
 				use_new_file_for_track(st);
 
-			/* Set previous track length if it has not been set */
+			/*
+			 * Set previous track length if it has not been set.
+			 * INDEX times that run backwards would make the
+			 * length negative; leave it unset instead.
+			 */
 			if (NULL != st->prev_track && NULL == st->cur_filename
 			    && track_get_length(st->prev_track) == -1
-			    && track_get_start(st->prev_track) != -1) {
+			    && track_get_start(st->prev_track) != -1
+			    && $3 >= track_get_start(st->prev_track)) {
 				/* track shares file with previous track */
 				track_set_length(st->prev_track,
 					$3 - track_get_start(st->prev_track));
@@ -278,7 +283,8 @@ track_statement
 
 				long idx00 = track_get_index(st->track, 0);
 
-				if (idx00 != -1 && $3 != 0)
+				/* INDEX 00 past INDEX 01 is not a pre-gap */
+				if (idx00 != -1 && $3 != 0 && $3 >= idx00)
 					track_set_zero_pre(st->track, $3 - idx00);
 			}
 

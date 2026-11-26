@@ -361,6 +361,45 @@ static char *test_long_times(void)
 	return NULL;
 }
 
+/* INDEX times running backwards produced negative lengths and pre-gaps */
+static char *test_no_negative_lengths(void)
+{
+	Cd *cd = cue_parse_string(
+		"FILE \"a.wav\" WAVE\n"
+		"TRACK 01 AUDIO\nINDEX 01 10:00:00\n"
+		"TRACK 02 AUDIO\nINDEX 01 00:00:00\n"
+		"TRACK 03 AUDIO\nINDEX 01 20:00:00\n");
+	mu_assert("backwards index: parse failed", cd != NULL);
+	mu_assert("backwards index: track 1 length",
+		  track_get_length(cd_get_track(cd, 1)) == -1);
+	mu_assert("backwards index: track 2 length",
+		  track_get_length(cd_get_track(cd, 2)) == MSF_TO_F(20, 0, 0));
+	cd_delete(cd);
+
+	cd = cue_parse_string(
+		"FILE \"a.wav\" WAVE\n"
+		"TRACK 01 AUDIO\nINDEX 00 09:00:00\nINDEX 01 00:00:01\n"
+		"TRACK 02 AUDIO\nINDEX 01 30:00:00\n");
+	mu_assert("index 00 past index 01: parse failed", cd != NULL);
+	mu_assert("index 00 past index 01: zero_pre",
+		  track_get_zero_pre(cd_get_track(cd, 1)) == -1);
+	cd_delete(cd);
+
+	/* ascending times keep the values they had before */
+	cd = cue_parse_string(
+		"FILE \"a.wav\" WAVE\n"
+		"TRACK 01 AUDIO\nINDEX 00 00:00:00\nINDEX 01 00:02:00\n"
+		"TRACK 02 AUDIO\nINDEX 01 05:00:00\n");
+	mu_assert("ascending index: parse failed", cd != NULL);
+	mu_assert("ascending index: zero_pre",
+		  track_get_zero_pre(cd_get_track(cd, 1)) == MSF_TO_F(0, 2, 0));
+	mu_assert("ascending index: track 1 length",
+		  track_get_length(cd_get_track(cd, 1))
+		  == MSF_TO_F(5, 0, 0) - MSF_TO_F(0, 2, 0));
+	cd_delete(cd);
+	return NULL;
+}
+
 /* #8: cdtext_get is an alias of cue_cdtext_get (libcdio clash) */
 static char *test_cue_cdtext_get(void)
 {
@@ -390,6 +429,7 @@ static char *run_tests(void)
 	mu_run_test(test_unquoted_multiword_values);
 	mu_run_test(test_blank_values);
 	mu_run_test(test_long_times);
+	mu_run_test(test_no_negative_lengths);
 	mu_run_test(test_cue_cdtext_get);
 	return NULL;
 }
