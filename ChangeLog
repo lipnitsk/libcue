@@ -1,3 +1,10 @@
+libcue (2.4.4)
+	[Kaif Khan]
+	* Never store a negative track length or pre-gap: INDEX times that
+	  run backwards now leave the field unset (-1) instead of storing a
+	  negative frame count, and no longer overwrite an explicit PREGAP
+	  (PR #93)
+
 libcue (2.4.3)
 	[Peter Lemenkov]
 	* Reject out-of-range numbers on 32-bit targets: the overflow check
